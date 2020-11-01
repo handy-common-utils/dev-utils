@@ -15,6 +15,9 @@
     "package.json",
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/handy-common-utils/fs-utils.git"
