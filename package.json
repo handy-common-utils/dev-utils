@@ -11,6 +11,10 @@
     "test": "mocha -r ts-node/register test/**/*spec.ts",
     "prepare": "shx rm -rf dist; tsc && shx chmod +x dist/bin/*.js"
   },
+  "files": [
+    "package.json",
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/handy-common-utils/fs-utils.git"
