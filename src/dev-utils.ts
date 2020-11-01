@@ -27,8 +27,9 @@ export abstract class DevUtils {
       startTitleLevelAt: 2,
     })
     .then(content => content.replace(/`Static`\*\*/g, '`Static` **'))
-    .then(content => `<!-- API start -->${content}<!-- API end -->`);
-    await FsUtils.replaceInFile(README_MD_FILE, /<!-- API start -->.*<!-- API end -->/ms, () => apiDocsContentPromise);
+    .then(content => `<!-- API start -->${content}<!-- API end -->`)
+    .then(content => FsUtils.escapeRegExpReplacement(content));
+    await FsUtils.replaceInFile(README_MD_FILE, /<!-- API start -->(.*)<!-- API end -->/ms, () => apiDocsContentPromise);
     await FsUtils.addSurroundingInFile(README_MD_FILE, /\*\*`example`\*\*(.*?)###/gms, '**`example`**\n```javascript\n', '```\n###');
   }
 
