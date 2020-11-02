@@ -9,6 +9,7 @@ export abstract class DevUtils {
   static async generateApiDocsMd(): Promise<void> {
     const tdCli = new CliApplication();
     tdCli.bootstrap({
+      inputFiles: ['./src'],
       out: API_DOCS_DIR,
       mode: 'file',
       readme: 'none',
