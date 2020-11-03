@@ -8,9 +8,10 @@
     "generate-api-docs-and-update-readme": "dist/bin/generate-api-docs-and-update-readme.js"
   },
   "scripts": {
-    "test": "mocha -r ts-node/register test/**/*spec.ts",
-    "prepare": "shx rm -rf dist; tsc && shx chmod +x dist/bin/*.js",
-    "preversion": "npm run prepare && dist/bin/generate-api-docs-and-update-readme.js"
+    "pretest": "eslint . --ext .ts",
+    "test": "nyc mocha -r ts-node/register test/**/*.spec.ts",
+    "prepare": "shx rm -rf dist && tsc",
+    "preversion": "npm run prepare && dist/bin/generate-api-docs-and-update-readme.js && git add README.md"
   },
   "files": [
     "package.json",
@@ -41,10 +42,14 @@
     "typedoc-plugin-markdown": "^3.0.11"
   },
   "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^1.0.1",
     "@types/chai": "^4.2.14",
     "@types/fs-extra": "^9.0.2",
     "@types/mocha": "^8.0.3",
     "chai": "^4.2.0",
+    "eslint": "^7.12.1",
+    "eslint-config-oclif": "^3.1.0",
+    "eslint-config-oclif-typescript": "^0.2.0",
     "mocha": "^8.2.0",
     "shx": "^0.3.3",
     "ts-node": "^9.0.0",
