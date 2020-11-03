@@ -10,7 +10,7 @@
   "scripts": {
     "pretest": "eslint . --ext .ts",
     "test": "nyc mocha -r ts-node/register test/**/*.spec.ts",
-    "prepare": "shx rm -rf dist && tsc",
+    "prepare": "shx rm -rf dist && tsc && shx chmod +x dist/bin/*.js",
     "preversion": "npm run prepare && dist/bin/generate-api-docs-and-update-readme.js && git add README.md"
   },
   "files": [
