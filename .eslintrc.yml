@@ -1,0 +1,32 @@
+extends:
+- oclif
+- oclif-typescript
+rules:
+  valid-jsdoc:
+  - error
+  - requireReturnType: false
+    requireParamType: false
+  no-eq-null: off
+  eqeqeq:
+  - error
+  - smart
+  lines-between-class-members:
+  - error
+  - always
+  - exceptAfterSingleLine: true
+  object-curly-spacing:
+  - error
+  - always
+  no-constant-condition:
+  - error
+  - checkLoops: false
+  semi:
+  - error
+  - always
+  max-params: 
+  - warn
+  - 7
+  indent:
+  - error
+  - 2
+  - MemberExpression: off
