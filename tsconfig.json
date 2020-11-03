@@ -2,20 +2,23 @@
   "include": [
     "src/**/*"
   ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ],
   "compilerOptions": {
     "declaration": true,
     "importHelpers": true,
     "module": "commonjs",
     "strict": true,
-    "target": "es2017",
+    "target": "es2018",
+    "esModuleInterop": true,
     "declarationMap": true,
+    "lib": ["es2018"],
     "forceConsistentCasingInFileNames": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "composite": false,
-    "rootDirs": [
-      "src"
-    ],
     "outDir": "dist"
   }
 }
