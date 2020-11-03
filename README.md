@@ -1,26 +1,21 @@
-# @handy-common-utils/fs-utils
+# @handy-common-utils/dev-utils
 
-File system operations related utilities based on fs-extra
+Utilities for the convenience of developers
 
 ## How to use
 
-First add it as a dependency:
+Normally you don't use this package directly.
+Instead, you add `@handy-common-utils/dev-dependencies`as a dev dependency:
 
 ```sh
-npm install @handy-common-utils/fs-utils
+npm install -D @handy-common-utils/dev-dependencies
 ```
 
-Then you can use it in the code:
+That's all.
 
-```javascript
-import { FsUtils } from '../fs-utils';
-
-const [,, filePath, matchPattern, beforeString, afterString] = process.argv;
-FsUtils.addSurrounding(filePath, new RegExp(matchPattern), beforeString, afterString);
-```
-
-You can either import and use the [class](#classes) as shown above,
-or you can import individual [functions](#variables) directly.
+After installation, you command line `generate-api-docs-and-update-readme` will be available in your project.
+This command line can update the `<!-- API start -->...<!-- API end -->` section
+in your `README.md` with generated API documentation.
 
 # API
 
