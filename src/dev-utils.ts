@@ -1,5 +1,5 @@
 import { CliApplication } from 'typedoc';
-import concatMd from "concat-md";
+import concatMd from 'concat-md';
 import { FsUtils } from '@handy-common-utils/fs-utils';
 
 const API_DOCS_DIR = 'api-docs';
@@ -33,5 +33,4 @@ export abstract class DevUtils {
     await FsUtils.replaceInFile(README_MD_FILE, /<!-- API start -->(.*)<!-- API end -->/ms, () => apiDocsContentPromise);
     await FsUtils.addSurroundingInFile(README_MD_FILE, /\*\*`example`\*\*(.*?)###/gms, '**`example`**\n```javascript\n', '```\n###');
   }
-
 }
