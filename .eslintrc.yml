@@ -31,4 +31,4 @@ rules:
   - 2
   - MemberExpression: off
     SwitchCase: 1
-  
+  unicorn/prevent-abbreviations: off
