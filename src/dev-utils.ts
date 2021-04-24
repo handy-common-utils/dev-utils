@@ -1,4 +1,4 @@
-import { CliApplication } from 'typedoc';
+import { Application } from 'typedoc';
 import concatMd from 'concat-md';
 import { FsUtils } from '@handy-common-utils/fs-utils';
 
@@ -7,11 +7,10 @@ const README_MD_FILE = 'README.md';
 
 export abstract class DevUtils {
   static async generateApiDocsMd(): Promise<void> {
-    const tdCli = new CliApplication();
+    const tdCli = new Application();
     tdCli.bootstrap({
-      inputFiles: ['./src'],
+      entryPoints: ['./src'],
       out: API_DOCS_DIR,
-      mode: 'file',
       readme: 'none',
       plugin: ['typedoc-plugin-markdown'],
       disableSources: true,
