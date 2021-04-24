@@ -14,7 +14,12 @@ npm install -D @handy-common-utils/dev-dependencies
 That's all.
 
 After installation, the command line `generate-api-docs-and-update-readme` will be available in your project.
-This command line can update the `<!-- API start -->
+This command line can update the the `<!--` `API start` `-->...<!--` `API end` `-->` section
+in your `README.md` with generated API documentation.
+
+# API
+
+<!-- API start -->
 <a name="readmemd"></a>
 
 **[@handy-common-utils/dev-utils](#readmemd)**
