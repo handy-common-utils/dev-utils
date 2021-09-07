@@ -1,6 +1,6 @@
 {
   "name": "@handy-common-utils/dev-utils",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Utilities for the convenience of developers",
   "main": "dist/dev-utils.js",
   "types": "dist/dev-utils.d.ts",
