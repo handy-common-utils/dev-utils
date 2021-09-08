@@ -22,70 +22,76 @@ in your `README.md` with generated API documentation.
 <!-- API start -->
 <a name="readmemd"></a>
 
-**[@handy-common-utils/dev-utils](#readmemd)**
-
-> Globals
+@handy-common-utils/dev-utils
 
 ## @handy-common-utils/dev-utils
 
-### Index
+### Table of contents
 
-#### Classes
+#### Modules
 
-* [DevUtils](#classesdevutilsmd)
-
-#### Variables
-
-* [API\_DOCS\_DIR](#api_docs_dir)
-* [README\_MD\_FILE](#readme_md_file)
-
-### Variables
-
-#### API\_DOCS\_DIR
-
-• `Const` **API\_DOCS\_DIR**: \"api-docs\" = "api-docs"
-
-___
-
-#### README\_MD\_FILE
-
-• `Const` **README\_MD\_FILE**: \"README.md\" = "README.md"
+- [dev-utils](#modulesdev_utilsmd)
 
 ## Classes
 
 
-<a name="classesdevutilsmd"></a>
+<a name="classesdev_utilsdevutilsmd"></a>
 
-**[@handy-common-utils/dev-utils](#readmemd)**
-
-> [Globals](#readmemd) / DevUtils
+[@handy-common-utils/dev-utils](#readmemd) / [dev-utils](#modulesdev_utilsmd) / DevUtils
 
 ### Class: DevUtils
 
-#### Hierarchy
+[dev-utils](#modulesdev_utilsmd).DevUtils
 
-* **DevUtils**
+#### Table of contents
 
-#### Index
+##### Constructors
+
+- [constructor](#constructor)
 
 ##### Methods
 
-* [generateApiDocsAndUpdateReadme](#generateapidocsandupdatereadme)
-* [generateApiDocsMd](#generateapidocsmd)
+- [generateApiDocsAndUpdateReadme](#generateapidocsandupdatereadme)
+- [generateApiDocsMd](#generateapidocsmd)
+
+#### Constructors
+
+##### constructor
+
+• **new DevUtils**()
 
 #### Methods
 
 ##### generateApiDocsAndUpdateReadme
 
-▸ `Static` **generateApiDocsAndUpdateReadme**(): Promise\<void>
+▸ `Static` **generateApiDocsAndUpdateReadme**(): `Promise`<`void`\>
 
-**Returns:** Promise\<void>
+###### Returns
+
+`Promise`<`void`\>
 
 ___
 
 ##### generateApiDocsMd
 
-▸ `Static` **generateApiDocsMd**(): Promise\<void>
+▸ `Static` **generateApiDocsMd**(): `Promise`<`void`\>
 
-**Returns:** Promise\<void>
+###### Returns
+
+`Promise`<`void`\>
+
+## Modules
+
+
+<a name="modulesdev_utilsmd"></a>
+
+[@handy-common-utils/dev-utils](#readmemd) / dev-utils
+
+### Module: dev-utils
+
+#### Table of contents
+
+##### Classes
+
+- [DevUtils](#classesdev_utilsdevutilsmd)
 <!-- API end -->
