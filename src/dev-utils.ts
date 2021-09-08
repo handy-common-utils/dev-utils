@@ -28,7 +28,7 @@ export abstract class DevUtils {
   }
 
   static async generateApiDocsAndUpdateReadme(): Promise<void> {
-    DevUtils.generateApiDocsMd();
+    await DevUtils.generateApiDocsMd();
     const apiDocsContentPromise = concatMd(API_DOCS_DIR, {
       toc: false,
       decreaseTitleLevels: true,
