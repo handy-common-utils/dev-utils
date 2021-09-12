@@ -17,7 +17,6 @@ export abstract class DevUtils {
       entryPoints: ['./src'],
       out: API_DOCS_DIR,
       readme: 'none',
-      plugin: ['typedoc-plugin-markdown'],
       disableSources: true,
       excludePrivate: true,
       excludeExternals: true,
