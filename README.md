@@ -30,7 +30,6 @@ in your `README.md` with generated API documentation.
 
 #### Modules
 
-- [bin/generate-api-docs-and-update-readme](#modulesbin_generate_api_docs_and_update_readmemd)
 - [dev-utils](#modulesdev_utilsmd)
 
 ## Classes
@@ -59,34 +58,29 @@ in your `README.md` with generated API documentation.
 
 ##### constructor
 
-\+ **new DevUtils**(): [*DevUtils*](#classesdev_utilsdevutilsmd)
-
-**Returns:** [*DevUtils*](#classesdev_utilsdevutilsmd)
+• **new DevUtils**()
 
 #### Methods
 
 ##### generateApiDocsAndUpdateReadme
 
-▸ `Static` **generateApiDocsAndUpdateReadme**(): *Promise*<void\>
+▸ `Static` **generateApiDocsAndUpdateReadme**(): `Promise`<`void`\>
 
-**Returns:** *Promise*<void\>
+###### Returns
+
+`Promise`<`void`\>
 
 ___
 
 ##### generateApiDocsMd
 
-▸ `Static` **generateApiDocsMd**(): *Promise*<void\>
+▸ `Static` **generateApiDocsMd**(): `Promise`<`void`\>
 
-**Returns:** *Promise*<void\>
+###### Returns
+
+`Promise`<`void`\>
 
 ## Modules
-
-
-<a name="modulesbin_generate_api_docs_and_update_readmemd"></a>
-
-[@handy-common-utils/dev-utils](#readmemd) / bin/generate-api-docs-and-update-readme
-
-### Module: bin/generate-api-docs-and-update-readme
 
 
 <a name="modulesdev_utilsmd"></a>
