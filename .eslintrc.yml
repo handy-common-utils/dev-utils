@@ -32,3 +32,11 @@ rules:
   - MemberExpression: off
     SwitchCase: 1
   unicorn/prevent-abbreviations: off
+  unicorn/no-static-only-class: off
+  unicorn/no-unreadable-array-destructuring: off
+  node/shebang:
+  - error
+  - convertPath:
+      src/bin/**/*.ts:
+      - "^src/bin/(.+?)\\.ts$"
+      - dist/bin//$1.js
