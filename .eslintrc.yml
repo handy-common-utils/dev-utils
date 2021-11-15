@@ -40,3 +40,4 @@ rules:
       src/bin/**/*.ts:
       - "^src/bin/(.+?)\\.ts$"
       - dist/bin//$1.js
+  node/no-extraneous-import: off
