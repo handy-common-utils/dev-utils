@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/handy-common-utils/dev-utils#readme",
   "dependencies": {
-    "@handy-common-utils/fs-utils": "^1.0.12",
+    "@handy-common-utils/fs-utils": "^1.0.15",
     "concat-md": "^0.3.5",
     "typedoc": "0.21.9",
     "typedoc-plugin-markdown": "3.10.4"
