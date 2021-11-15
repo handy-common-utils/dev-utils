@@ -36,6 +36,7 @@ rules:
   unicorn/no-static-only-class: off
   unicorn/no-unreadable-array-destructuring: off
   unicorn/empty-brace-spaces: off
+  unicorn/numeric-separators-style: off
   node/shebang:
   - error
   - convertPath:
@@ -46,4 +47,5 @@ rules:
   no-await-in-loop: off
   no-useless-constructor: off
   max-depth: off
+  padding-line-between-statements: off
   
