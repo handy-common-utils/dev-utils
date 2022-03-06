@@ -1,17 +1,21 @@
 # @handy-common-utils/dev-utils
 
-Utilities for the convenience of developers
+Tool chain utilities for the convenience of developers.
+
+[![Version](https://img.shields.io/npm/v/@handy-common-utils/dev-utils.svg)](https://npmjs.org/package/@handy-common-utils/dev-utils)
+[![Downloads/week](https://img.shields.io/npm/dw/@handy-common-utils/dev-utils.svg)](https://npmjs.org/package/@handy-common-utils/dev-utils)
+[![CI](https://github.com/handy-common-utils/dev-utils/actions/workflows/ci.yml/badge.svg)](https://github.com/handy-common-utils/dev-utils/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/handy-common-utils/dev-utils/branch/master/graph/badge.svg?token=K92AF9D201)](https://codecov.io/gh/handy-common-utils/dev-utils)
+
 
 ## How to use
 
 Normally you don't use this package directly.
-Instead, you add `@handy-common-utils/dev-dependencies`as a dev dependency:
+Instead, you add `@handy-common-utils/dev-dependencies`as a dev dependency (which in turn depends on this package):
 
 ```sh
 npm install -D @handy-common-utils/dev-dependencies
 ```
-
-That's all.
 
 After installation, the command line `generate-api-docs-and-update-readme` will be available in your project.
 This command line can update the `<!--` `API start` `-->...<!--` `API end` `-->` section
