@@ -20,6 +20,7 @@ export abstract class DevUtils {
       disableSources: true,
       excludePrivate: true,
       excludeExternals: true,
+      entryPointStrategy: 'expand',
       ...options,
     });
 

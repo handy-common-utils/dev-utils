@@ -18,7 +18,7 @@ describe('DevUtils', () => {
     await FsUtils.replaceInFile(readmePath, /<!-- API start -->([\s\S]*)<!-- API end -->/m, PATTERN_STRING);
     expect(fs.readFileSync(readmePath, 'utf8')).to.include(PATTERN_STRING);
 
-    await DevUtils.generateApiDocsAndUpdateReadme(readmePath, ['src/dev-utils.ts']);
+    await DevUtils.generateApiDocsAndUpdateReadme(readmePath);
     const content = fs.readFileSync(readmePath, 'utf8');
     expect(content).to.not.include(PATTERN_STRING);
     expect(content).to.include('generateApiDocsAndUpdateReadme');

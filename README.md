@@ -20,7 +20,7 @@ in your `README.md` with generated API documentation.
 You can use optional command line arguments to customise the behaviour of `generate-api-docs-and-update-readme`:
 
 1. Path of the readme.md file. The path must ends with ".md" (case insensitive). The file would be modified. Default: `README.md`.
-2. Entry points for generating API documentation. Multiple entry points can be specified by joining them with comma (`,`). Default: as specified in `package.json`.
+2. Entry points for generating API documentation. Multiple entry points can be specified by joining them with comma (`,`). Default: `./src`.
 3. path of the directory for storing generated intemediate documentation files. This directory would not be cleaned up. Default: `api-docs`.
 
 These arguments must be specified in the order as shown above.
@@ -72,17 +72,44 @@ These arguments must be specified in the order as shown above.
 
 ##### generateApiDocsAndUpdateReadme
 
-▸ `Static` **generateApiDocsAndUpdateReadme**(): `Promise`<`void`\>
+▸ `Static` **generateApiDocsAndUpdateReadme**(`readmeLocation?`, `entryPoints?`, `apiDocDir?`, `typeDocOptions?`): `Promise`<`void`\>
+
+Generate API documentation and insert it into README.md file.
+
+**`example`**
+```javascript
+
+DevUtils.generateApiDocsAndUpdateReadme(readmePath, entryPoints, apiDocDir);
+
+```
+###### Parameters
+
+| Name | Type | Default value | Description |
+| :------ | :------ | :------ | :------ |
+| `readmeLocation` | `string` | `README_MD_FILE` | location of the README.md file |
+| `entryPoints` | `string`[] | `undefined` | Entry points for generating API documentation |
+| `apiDocDir` | `string` | `API_DOCS_DIR` | temporary directory for storing intemediate documenation files |
+| `typeDocOptions?` | `Partial`<`Omit`<`TypeDocOptions`, ``"entryPoints"`` \| ``"out"``\>\> | `undefined` | Options for TypeDoc |
 
 ###### Returns
 
 `Promise`<`void`\>
 
+Promise of void
+
 ___
 
 ##### generateApiDocsMd
 
-▸ `Static` **generateApiDocsMd**(): `Promise`<`void`\>
+▸ `Static` **generateApiDocsMd**(`entryPoints?`, `apiDocDir?`, `options?`): `Promise`<`void`\>
+
+###### Parameters
+
+| Name | Type | Default value |
+| :------ | :------ | :------ |
+| `entryPoints` | `string`[] | `undefined` |
+| `apiDocDir` | `string` | `API_DOCS_DIR` |
+| `options?` | `Partial`<`Omit`<`TypeDocOptions`, ``"entryPoints"`` \| ``"out"``\>\> | `undefined` |
 
 ###### Returns
 
