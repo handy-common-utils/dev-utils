@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { DevUtils } from '../src/dev-utils';
 import * as fs from 'fs-extra';
-import * as path from 'node:path';
+import * as path from 'path';
 import { FsUtils } from '@handy-common-utils/fs-utils';
 
 const TMP_DIR = 'tmp';
