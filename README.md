@@ -17,6 +17,14 @@ After installation, the command line `generate-api-docs-and-update-readme` will 
 This command line can update the `<!--` `API start` `-->...<!--` `API end` `-->` section
 in your `README.md` with generated API documentation.
 
+You can use optional command line arguments to customise the behaviour of `generate-api-docs-and-update-readme`:
+
+1. Path of the readme.md file. The path must ends with ".md" (case insensitive). The file would be modified. Default: `README.md`.
+2. Entry points for generating API documentation. Multiple entry points can be specified by joining them with comma (`,`). Default: as specified in `package.json`.
+3. path of the directory for storing generated intemediate documentation files. This directory would not be cleaned up. Default: `api-docs`.
+
+These arguments must be specified in the order as shown above.
+
 # API
 
 <!-- API start -->
