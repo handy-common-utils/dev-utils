@@ -42,9 +42,13 @@
   "dependencies": {
     "@handy-common-utils/fs-utils": "^1.0.15",
     "concat-md": "^0.3.8",
+    "serverless-plugin-git-variables": "^5.2.0",
     "typedoc": "^0.22.12",
     "typedoc-plugin-markdown": "^3.11.14"
   },
+  "bundledDependencies": [
+    "serverless-plugin-git-variables"
+  ],
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@types/chai": "^4.3.0",
