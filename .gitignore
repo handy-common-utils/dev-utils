@@ -106,3 +106,4 @@ dist
 API.md
 api-docs
 tmp/
+.DS_Store
