@@ -47,9 +47,13 @@ export interface GitInfo {
    */
   email: string;
   /**
-   * tags (separated by ::) on the current commit, or sha1/ID of the commit if there's no tag
+   * tags on the current commit, or sha1/ID of the commit if there's no tag
    */
-  tags: string;
+  tags: string[];
+  /**
+   * First tag on the current commit, or sha1/ID of the commit if there's no tag
+   */
+  tag: string;
   /**
    * full git commit message
    */
@@ -115,7 +119,7 @@ export abstract class DevUtils {
     await FsUtils.addSurroundingInFile(readmeLocation, /\*\*`example`\*\*([\s\S]*?)###/gm, '**`example`**\n```javascript\n', '```\n###');
   }
 
-  static async getGitInfo(whitelistKeys?: GitInfoKey[]): Promise<Partial<GitInfo>> {
+  static async getGitInfo(whitelistKeys?: GitInfoKey[], checkEnvironmentVariables = true): Promise<Partial<GitInfo>> {
     const slsGitVars = new ServerlessGitVariables({});
     const allPossibleKeys: GitInfoKey[] = [
       'repository',
@@ -128,6 +132,7 @@ export abstract class DevUtils {
       'user',
       'email',
       'tags',
+      'tag',
       'message',
       'messageSubject',
       'messageBody',
@@ -138,13 +143,22 @@ export abstract class DevUtils {
       try {
         switch (key) {
           case 'commitIdShort':
-            info[key] = await slsGitVars._getValue('sha1');
+            info[key] = (checkEnvironmentVariables ? (process.env.GIT_COMMIT ?? process.env.GITHUB_SHA)?.substring(0, 7) : undefined) ?? await slsGitVars._getValue('sha1');
             break;
           case 'commitIdLong':
-            info[key] = await slsGitVars._getValue('commit');
+            info[key] = (checkEnvironmentVariables ? (process.env.GIT_COMMIT ?? process.env.GITHUB_SHA) : undefined) ?? await slsGitVars._getValue('commit');
+            break;
+          case 'branch':
+            info[key] = (checkEnvironmentVariables ? (process.env.GIT_LOCAL_BRANCH ?? process.env.GIT_BRANCH ?? process.env.BRANCH_NAME ?? process.env.GITHUB_REF_NAME) : undefined) ?? await slsGitVars._getValue(key);
             break;
           case 'isDirty':
             info[key] = Boolean(await slsGitVars._getValue(key));
+            break;
+          case 'tags':
+            info[key] = (await slsGitVars._getValue(key) as string).split('::');
+            break;
+          case 'tag':
+            info[key] = (await slsGitVars._getValue('tags') as string).split('::')[0];
             break;
           default:
             info[key] = await slsGitVars._getValue(key);

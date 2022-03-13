@@ -43,7 +43,11 @@ describe('DevUtils', () => {
       expect(info.isDirty).to.be.a('boolean');
       expect(info.describe).to.be.not.empty;
       expect(info.describeLight).to.be.not.empty;
-      expect(info.tags).to.be.not.empty;
+      expect(info.tags).to.be.an('array');
+      expect(info.tags!.length).to.be.greaterThanOrEqual(1);
+      expect(info.tag).to.be.a('string');
+      expect(info.tag).to.be.not.empty;
+      expect(info.tag).to.equal(info.tags![0]);
       expect(info.message).to.be.not.empty;
       expect(info.messageSubject).to.be.not.empty;
       expect(info.messageBody).to.be.a('string');
