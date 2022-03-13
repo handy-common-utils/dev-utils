@@ -135,18 +135,22 @@ export abstract class DevUtils {
     const keys = whitelistKeys ? allPossibleKeys.filter(k => whitelistKeys.includes(k)) : allPossibleKeys;
     const info = {} as Partial<GitInfo>;
     await Promise.all(keys.map(async key => {
-      switch (key) {
-        case 'commitIdShort':
-          info[key] = await slsGitVars._getValue('sha1');
-          break;
-        case 'commitIdLong':
-          info[key] = await slsGitVars._getValue('commit');
-          break;
-        case 'isDirty':
-          info[key] = Boolean(await slsGitVars._getValue(key));
-          break;
-        default:
-          info[key] = await slsGitVars._getValue(key);
+      try {
+        switch (key) {
+          case 'commitIdShort':
+            info[key] = await slsGitVars._getValue('sha1');
+            break;
+          case 'commitIdLong':
+            info[key] = await slsGitVars._getValue('commit');
+            break;
+          case 'isDirty':
+            info[key] = Boolean(await slsGitVars._getValue(key));
+            break;
+          default:
+            info[key] = await slsGitVars._getValue(key);
+        }
+      } catch {
+        // do nothing
       }
     }));
     return info;
