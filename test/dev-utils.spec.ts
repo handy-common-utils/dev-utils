@@ -32,7 +32,7 @@ describe('DevUtils', () => {
     it('should be able to get all Git information', async function () {
       this.timeout(10000);
       const info = await DevUtils.getGitInfo();
-      console.log(info);
+      // console.log(info);
       expect(info).to.be.an('object');
       expect(info.repository).to.be.not.empty;
       expect(info.commitIdShort).to.be.not.empty;
@@ -59,8 +59,7 @@ describe('DevUtils', () => {
       this.timeout(10000);
       const whitelist: GitInfoKey[] = ['repository', 'branch', 'commitIdShort'];
       const info = await DevUtils.getGitInfo(whitelist);
-      console.log(info);
-      console.log(process.env);
+      // console.log(info);
       expect(info).to.be.an('object');
       expect(info.repository).to.be.not.empty;
       expect(info.commitIdShort).to.be.not.empty;

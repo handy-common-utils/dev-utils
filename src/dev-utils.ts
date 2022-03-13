@@ -119,7 +119,26 @@ export abstract class DevUtils {
     await FsUtils.addSurroundingInFile(readmeLocation, /\*\*`example`\*\*([\s\S]*?)###/gm, '**`example`**\n```javascript\n', '```\n###');
   }
 
-  static async getGitInfo(whitelistKeys?: GitInfoKey[], checkEnvironmentVariables = true): Promise<Partial<GitInfo>> {
+  /**
+   * Get Git related information. This function relies on the existence of Git command line.
+   *
+   * By default all possible information will be returned, but this can be overriden by
+   * specifying `whitelistKeys` argument.
+   *
+   * If `checkEnvironmentVariables` argument is `true`, then environment variables `GIT_COMMIT` and `GITHUB_SHA`
+   * will be checked before trying to identify the commit ID from local Git repository,
+   * also environment variables `GIT_LOCAL_BRANCH`, `GIT_BRANCH`, `BRANCH_NAME`, `GITHUB_REF_NAME`
+   * will be checked before trying to identify the branch name from local Git repository.
+   *
+   * This function never throws Error. For example, if user and email have not been configured,
+   * they would be undefined in the returned object.
+   *
+   * @param whitelistKeys keys (property names) in the returned object that values need to be populated
+   * @param checkEnvironmentVariables true (default value) if environment variables should be checked
+   * @param reportErrors true if errors should be reported in the `errors: any[]` property of the returned object
+   * @returns Git related information
+   */
+  static async getGitInfo(whitelistKeys?: GitInfoKey[], checkEnvironmentVariables = true, reportErrors = false): Promise<Partial<GitInfo>> {
     const slsGitVars = new ServerlessGitVariables({});
     const allPossibleKeys: GitInfoKey[] = [
       'repository',
@@ -138,7 +157,8 @@ export abstract class DevUtils {
       'messageBody',
     ];
     const keys = whitelistKeys ? allPossibleKeys.filter(k => whitelistKeys.includes(k)) : allPossibleKeys;
-    const info = {} as Partial<GitInfo>;
+    const info = {} as Partial<GitInfo> & {errors: any[]};
+    // eslint-disable-next-line complexity
     await Promise.all(keys.map(async key => {
       try {
         switch (key) {
@@ -163,8 +183,13 @@ export abstract class DevUtils {
           default:
             info[key] = await slsGitVars._getValue(key);
         }
-      } catch {
-        // do nothing
+      } catch (error) {
+        if (reportErrors) {
+          if (!info.errors) {
+            info.errors = [];
+          }
+          info.errors.push(error);
+        }
       }
     }));
     return info;
