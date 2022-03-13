@@ -1,9 +1,70 @@
 import { Application, TypeDocReader, TSConfigReader, TypeDocOptions } from 'typedoc';
 import concatMd from 'concat-md';
 import { FsUtils } from '@handy-common-utils/fs-utils';
+const ServerlessGitVariables = require('serverless-plugin-git-variables');
 
 const API_DOCS_DIR = 'api-docs';
 const README_MD_FILE = 'README.md';
+
+/**
+ * Git related information. See https://github.com/jacob-meacham/serverless-plugin-git-variables
+ */
+export interface GitInfo {
+  /**
+   * name of the git repository
+   */
+  repository: string;
+  /**
+   * hash of the current commit, a.k.a. commit ID, in short format
+   */
+  commitIdShort: string;
+  /**
+   * hash of the current commit, a.k.a. commit ID, in full
+   */
+   commitIdLong: string;
+  /**
+   * name of the current branch
+   */
+  branch: string;
+  /**
+   * true if the workspace is currently dirty
+   */
+  isDirty: boolean;
+  /**
+   * the most recent tag of the repo, evaluates to `git describe --always`
+   */
+  describe: string;
+  /**
+   * the most recent tag of the repo, evaluates to `git describe --always --tags`
+   */
+  describeLight: string;
+  /**
+   * current Git user's name as configured by `git config user.name ...`
+   */
+  user: string;
+  /**
+   * current Git user's email as configured by `git config user.email ...`
+   */
+  email: string;
+  /**
+   * tags (separated by ::) on the current commit, or sha1/ID of the commit if there's no tag
+   */
+  tags: string;
+  /**
+   * full git commit message
+   */
+  message: string;
+  /**
+   * suject of the commit message, as `git log -1 --pretty=%s`
+   */
+  messageSubject: string;
+  /**
+   * body of the commit message, as `git log -1 --pretty=%b`
+   */
+  messageBody: string;
+}
+
+export type GitInfoKey = keyof GitInfo;
 
 export abstract class DevUtils {
   static async generateApiDocsMd(entryPoints = ['./src'], apiDocDir = API_DOCS_DIR, options?: Partial<Omit<TypeDocOptions, 'out'|'entryPoints'>>): Promise<void> {
@@ -52,5 +113,42 @@ export abstract class DevUtils {
     .then(content => FsUtils.escapeRegExpReplacement(content));
     await FsUtils.replaceInFile(readmeLocation, /<!-- API start -->([\s\S]*)<!-- API end -->/m, () => apiDocsContentPromise);
     await FsUtils.addSurroundingInFile(readmeLocation, /\*\*`example`\*\*([\s\S]*?)###/gm, '**`example`**\n```javascript\n', '```\n###');
+  }
+
+  static async getGitInfo(whitelistKeys?: GitInfoKey[]): Promise<Partial<GitInfo>> {
+    const slsGitVars = new ServerlessGitVariables({});
+    const allPossibleKeys: GitInfoKey[] = [
+      'repository',
+      'commitIdShort',
+      'commitIdLong',
+      'branch',
+      'isDirty',
+      'describe',
+      'describeLight',
+      'user',
+      'email',
+      'tags',
+      'message',
+      'messageSubject',
+      'messageBody',
+    ];
+    const keys = whitelistKeys ? allPossibleKeys.filter(k => whitelistKeys.includes(k)) : allPossibleKeys;
+    const info = {} as Partial<GitInfo>;
+    await Promise.all(keys.map(async key => {
+      switch (key) {
+        case 'commitIdShort':
+          info[key] = await slsGitVars._getValue('sha1');
+          break;
+        case 'commitIdLong':
+          info[key] = await slsGitVars._getValue('commit');
+          break;
+        case 'isDirty':
+          info[key] = Boolean(await slsGitVars._getValue(key));
+          break;
+        default:
+          info[key] = await slsGitVars._getValue(key);
+      }
+    }));
+    return info;
   }
 }
