@@ -86,6 +86,7 @@ npm i serverless-plugin-git-variables --legacy-peer-deps
 
 - [generateApiDocsAndUpdateReadme](#generateapidocsandupdatereadme)
 - [generateApiDocsMd](#generateapidocsmd)
+- [getGitInfo](#getgitinfo)
 
 #### Constructors
 
@@ -140,6 +141,183 @@ ___
 
 `Promise`<`void`\>
 
+___
+
+##### getGitInfo
+
+▸ `Static` **getGitInfo**(`whitelistKeys?`, `checkEnvironmentVariables?`, `reportErrors?`): `Promise`<`Partial`<[`GitInfo`](#interfacesdev_utilsgitinfomd)\>\>
+
+Get Git related information. This function relies on the existence of Git command line.
+
+By default all possible information will be returned, but this can be overriden by
+specifying `whitelistKeys` argument.
+
+If `checkEnvironmentVariables` argument is `true`, then environment variables `GIT_COMMIT` and `GITHUB_SHA`
+will be checked before trying to identify the commit ID from local Git repository,
+also environment variables `GIT_LOCAL_BRANCH`, `GIT_BRANCH`, `BRANCH_NAME`, `GITHUB_REF_NAME`
+will be checked before trying to identify the branch name from local Git repository.
+
+This function never throws Error. For example, if user and email have not been configured,
+they would be undefined in the returned object.
+
+###### Parameters
+
+| Name | Type | Default value | Description |
+| :------ | :------ | :------ | :------ |
+| `whitelistKeys?` | keyof [`GitInfo`](#interfacesdev_utilsgitinfomd)[] | `undefined` | keys (property names) in the returned object that values need to be populated |
+| `checkEnvironmentVariables` | `boolean` | `true` | true (default value) if environment variables should be checked |
+| `reportErrors` | `boolean` | `false` | true if errors should be reported in the `errors: any[]` property of the returned object |
+
+###### Returns
+
+`Promise`<`Partial`<[`GitInfo`](#interfacesdev_utilsgitinfomd)\>\>
+
+Git related information
+
+## Interfaces
+
+
+<a name="interfacesdev_utilsgitinfomd"></a>
+
+[@handy-common-utils/dev-utils](#readmemd) / [dev-utils](#modulesdev_utilsmd) / GitInfo
+
+### Interface: GitInfo
+
+[dev-utils](#modulesdev_utilsmd).GitInfo
+
+Git related information. See https://github.com/jacob-meacham/serverless-plugin-git-variables
+
+#### Table of contents
+
+##### Properties
+
+- [branch](#branch)
+- [commitIdLong](#commitidlong)
+- [commitIdShort](#commitidshort)
+- [describe](#describe)
+- [describeLight](#describelight)
+- [email](#email)
+- [isDirty](#isdirty)
+- [message](#message)
+- [messageBody](#messagebody)
+- [messageSubject](#messagesubject)
+- [repository](#repository)
+- [tag](#tag)
+- [tags](#tags)
+- [user](#user)
+
+#### Properties
+
+##### branch
+
+• **branch**: `string`
+
+name of the current branch
+
+___
+
+##### commitIdLong
+
+• **commitIdLong**: `string`
+
+hash of the current commit, a.k.a. commit ID, in full
+
+___
+
+##### commitIdShort
+
+• **commitIdShort**: `string`
+
+hash of the current commit, a.k.a. commit ID, in short format
+
+___
+
+##### describe
+
+• **describe**: `string`
+
+the most recent tag of the repo, evaluates to `git describe --always`
+
+___
+
+##### describeLight
+
+• **describeLight**: `string`
+
+the most recent tag of the repo, evaluates to `git describe --always --tags`
+
+___
+
+##### email
+
+• **email**: `string`
+
+current Git user's email as configured by `git config user.email ...`
+
+___
+
+##### isDirty
+
+• **isDirty**: `boolean`
+
+true if the workspace is currently dirty
+
+___
+
+##### message
+
+• **message**: `string`
+
+full git commit message
+
+___
+
+##### messageBody
+
+• **messageBody**: `string`
+
+body of the commit message, as `git log -1 --pretty=%b`
+
+___
+
+##### messageSubject
+
+• **messageSubject**: `string`
+
+suject of the commit message, as `git log -1 --pretty=%s`
+
+___
+
+##### repository
+
+• **repository**: `string`
+
+name of the git repository
+
+___
+
+##### tag
+
+• **tag**: `string`
+
+First tag on the current commit, or sha1/ID of the commit if there's no tag
+
+___
+
+##### tags
+
+• **tags**: `string`[]
+
+tags on the current commit, or sha1/ID of the commit if there's no tag
+
+___
+
+##### user
+
+• **user**: `string`
+
+current Git user's name as configured by `git config user.name ...`
+
 ## Modules
 
 
@@ -154,4 +332,18 @@ ___
 ##### Classes
 
 - [DevUtils](#classesdev_utilsdevutilsmd)
+
+##### Interfaces
+
+- [GitInfo](#interfacesdev_utilsgitinfomd)
+
+##### Type aliases
+
+- [GitInfoKey](#gitinfokey)
+
+#### Type aliases
+
+##### GitInfoKey
+
+Ƭ **GitInfoKey**: keyof [`GitInfo`](#interfacesdev_utilsgitinfomd)
 <!-- API end -->
