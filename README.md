@@ -8,9 +8,9 @@ Tool chain utilities for the convenience of developers.
 [![codecov](https://codecov.io/gh/handy-common-utils/dev-utils/branch/master/graph/badge.svg?token=K92AF9D201)](https://codecov.io/gh/handy-common-utils/dev-utils)
 
 
-## How to use
+## How to use - generating API doc and update README.md
 
-Normally you don't use this package directly.
+Normally you don't use this package directly (althought it is perfectly fine to use this package alone).
 Instead, you add `@handy-common-utils/dev-dependencies`as a dev dependency (which in turn depends on this package):
 
 ```sh
@@ -28,6 +28,18 @@ You can use optional command line arguments to customise the behaviour of `gener
 3. path of the directory for storing generated intemediate documentation files. This directory would not be cleaned up. Default: `api-docs`.
 
 These arguments must be specified in the order as shown above.
+
+## How to use - getGitInfo(...)
+
+`const info = await DevUtils.getGitInfo();` is how you can get Git repository related information,
+such as repository, branch, commit id, tags, etc.
+It relies on the Git command line tool ('git') to have already been installed.
+
+The function accepts two optinoal arugments. The first one allows you to specify which properties/info to return.
+The second one allows you to control whether environment variables should be checked.
+By default all properties/info would be returned and environment variables would be checked before falling back to checking local Git repository.
+
+Checking environment variables is handy when you use it in a build/CI/CD pipeline.
 
 # How to contribute
 
