@@ -41,6 +41,30 @@ By default all properties/info would be returned and environment variables would
 
 Checking environment variables is handy when you use it in a build/CI/CD pipeline.
 
+Below is an example output:
+```javascript
+{
+  message: 'user and email could be undefined in CI',
+  email: 'james.hu.ustc@hotmail.com',
+  user: 'James Hu',
+  describeLight: 'v1.0.26-3-g6cfaeb8',
+  describe: 'v1.0.26-3-g6cfaeb8',
+  isDirty: true,
+  branch: 'feature/git-info',
+  commitIdLong: '6cfaeb8dade5c374c5dcc1e440795aeab3951fa9',
+  commitIdShort: '6cfaeb8',
+  repository: 'dev-utils',
+  messageBody: '',
+  messageSubject: 'user and email could be undefined in CI',
+  tag: '6cfaeb8',
+  tags: [ '6cfaeb8' ]
+}
+```
+
+Details of the properties in this structure can be found in [the documentation of `GitInfo` interface](#interfacesdev_utilsgitinfomd).
+
+The functionality depends on [serverless-plugin-git-variables](https://github.com/jacob-meacham/serverless-plugin-git-variables). Check it out if you are interested.
+
 # How to contribute
 
 Please note that for avoidding peer dependency `serverless` to be included,
