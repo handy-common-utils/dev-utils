@@ -70,5 +70,65 @@ describe('DevUtils', () => {
       expect(Object.keys(info)).to.have.members(whitelist);
       expect(whitelist).to.have.members(Object.keys(info));
     });
+    it('should environment variables GIT_COMMIT and GITHUB_SHA be effective', async () => {
+      const whitelist: GitInfoKey[] = ['commitIdShort', 'commitIdLong'];
+      const fakeCommitIdLong = 'this_is_a_fake_commit_id_which_is_quite_long';
+      const fakeCommitIdShort = fakeCommitIdLong.substring(0, 7);
+
+      let info = await DevUtils.getGitInfo(whitelist);
+      expect(info.commitIdShort).to.not.equal(fakeCommitIdShort);
+      expect(info.commitIdLong).to.not.equal(fakeCommitIdLong);
+
+      process.env.GITHUB_SHA = fakeCommitIdLong;
+      info = await DevUtils.getGitInfo(whitelist);
+      expect(info.commitIdShort).to.equal(fakeCommitIdShort);
+      expect(info.commitIdLong).to.equal(fakeCommitIdLong);
+      info = await DevUtils.getGitInfo(whitelist, false);
+      expect(info.commitIdShort).to.not.equal(fakeCommitIdShort);
+      expect(info.commitIdLong).to.not.equal(fakeCommitIdLong);
+
+      process.env.GITHUB_SHA = 'wrong';
+      process.env.GIT_COMMIT = fakeCommitIdLong;
+      info = await DevUtils.getGitInfo(whitelist);
+      expect(info.commitIdShort).to.equal(fakeCommitIdShort);
+      expect(info.commitIdLong).to.equal(fakeCommitIdLong);
+      info = await DevUtils.getGitInfo(whitelist, false);
+      expect(info.commitIdShort).to.not.equal(fakeCommitIdShort);
+      expect(info.commitIdLong).to.not.equal(fakeCommitIdLong);
+    });
+    it('should environment variables GIT_LOCAL_BRANCH, GIT_BRANCH, BRANCH_NAME and GITHUB_REF_NAME be effective', async () => {
+      const whitelist: GitInfoKey[] = ['branch'];
+      const fakeBranchName = 'this_is_a/fake-branch-name';
+
+      let info = await DevUtils.getGitInfo(whitelist);
+      expect(info.branch).to.not.equal(fakeBranchName);
+
+      process.env.GITHUB_REF_NAME = fakeBranchName;
+      info = await DevUtils.getGitInfo(whitelist);
+      expect(info.branch).to.equal(fakeBranchName);
+      info = await DevUtils.getGitInfo(whitelist, false);
+      expect(info.branch).to.not.equal(fakeBranchName);
+
+      process.env.GITHUB_REF_NAME = 'wrong1';
+      process.env.BRANCH_NAME = fakeBranchName;
+      info = await DevUtils.getGitInfo(whitelist);
+      expect(info.branch).to.equal(fakeBranchName);
+      info = await DevUtils.getGitInfo(whitelist, false);
+      expect(info.branch).to.not.equal(fakeBranchName);
+
+      process.env.BRANCH_NAME = 'wrong2';
+      process.env.GIT_BRANCH = fakeBranchName;
+      info = await DevUtils.getGitInfo(whitelist);
+      expect(info.branch).to.equal(fakeBranchName);
+      info = await DevUtils.getGitInfo(whitelist, false);
+      expect(info.branch).to.not.equal(fakeBranchName);
+
+      process.env.GIT_BRANCH = 'wrong3';
+      process.env.GIT_LOCAL_BRANCH = fakeBranchName;
+      info = await DevUtils.getGitInfo(whitelist);
+      expect(info.branch).to.equal(fakeBranchName);
+      info = await DevUtils.getGitInfo(whitelist, false);
+      expect(info.branch).to.not.equal(fakeBranchName);
+    });
   });
 });
