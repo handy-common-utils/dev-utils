@@ -1,5 +1,20 @@
+/**
+ * ## Re-exports
+ *
+ * ### Functions
+ *
+ * - [generateApiDocsMd](../classes/dev_utils.DevUtils.md#generateApiDocsMd)
+ * - [generateApiDocsAndUpdateReadme](../classes/dev_utils.DevUtils.md#generateapidocsandupdatereadme)
+ * - [getGitInfo](../classes/dev_utils.DevUtils.md#getGitInfo)
+ *
+ * ## Exports
+ *
+ * @module
+ */
 import { Application, TypeDocReader, TSConfigReader, TypeDocOptions } from 'typedoc';
 import concatMd from 'concat-md';
+import * as fs from 'fs-extra';
+import * as path from 'path';
 import { FsUtils } from '@handy-common-utils/fs-utils';
 const ServerlessGitVariables = require('serverless-plugin-git-variables');
 
@@ -107,12 +122,27 @@ export abstract class DevUtils {
     entryPoints = ['./src'], apiDocDir = API_DOCS_DIR, typeDocOptions?: Partial<Omit<TypeDocOptions, 'out'|'entryPoints'>>,
   ): Promise<void> {
     await DevUtils.generateApiDocsMd(entryPoints, apiDocDir, typeDocOptions);
+
+    // if there's only one module, use its .md as README.md
+    const moduleMdFileDir = path.join(apiDocDir, 'modules');
+    const moduleMdFiles = fs.readdirSync(moduleMdFileDir);
+    if (moduleMdFiles.length === 1) {
+      const moduleMdFileName = moduleMdFiles[0];
+      const moduleMdFile = path.join(moduleMdFileDir, moduleMdFileName);
+      const readmeMdFile = path.join(apiDocDir, 'README.md');
+      fs.moveSync(moduleMdFile, readmeMdFile, { overwrite: true });
+      // fix links
+      await FsUtils.replaceInFile(readmeMdFile, /]\(\.\.\//g, '](');
+      await FsUtils.replaceInFile(readmeMdFile, new RegExp(`]\\(${moduleMdFileName}#`, 'g'), '](#');
+    }
+
     const apiDocsContentPromise = concatMd(apiDocDir, {
       toc: false,
       decreaseTitleLevels: true,
       dirNameAsTitle: true,
       startTitleLevelAt: 2,
     })
+    .then(content => content.replace(/##+ Table of contents\n/g, ''))
     .then(content => `<!-- API start -->${content}<!-- API end -->`)
     .then(content => FsUtils.escapeRegExpReplacement(content));
     await FsUtils.replaceInFile(readmeLocation, /<!-- API start -->([\s\S]*)<!-- API end -->/m, () => apiDocsContentPromise);
@@ -195,3 +225,10 @@ export abstract class DevUtils {
     return info;
   }
 }
+
+/** @ignore */
+export const generateApiDocsMd = DevUtils.generateApiDocsMd;
+/** @ignore */
+export const generateApiDocsAndUpdateReadme = DevUtils.generateApiDocsAndUpdateReadme;
+/** @ignore */
+export const getGitInfo = DevUtils.getGitInfo;

@@ -79,28 +79,50 @@ npm i serverless-plugin-git-variables --legacy-peer-deps
 <!-- API start -->
 <a name="readmemd"></a>
 
-@handy-common-utils/dev-utils
+[@handy-common-utils/dev-utils](#readmemd) / dev-utils
 
-## @handy-common-utils/dev-utils
+## Module: dev-utils
 
-### Table of contents
+### Re-exports
 
-#### Modules
+#### Functions
 
-- [dev-utils](#modulesdev_utilsmd)
+- [generateApiDocsMd](#generateApiDocsMd)
+- [generateApiDocsAndUpdateReadme](#generateapidocsandupdatereadme)
+- [getGitInfo](#getGitInfo)
+
+### Exports
+
+
+#### Classes
+
+- [DevUtils](#classesdev_utilsdevutilsmd)
+
+#### Interfaces
+
+- [GitInfo](#interfacesdev_utilsgitinfomd)
+
+#### Type aliases
+
+- [GitInfoKey](#gitinfokey)
+
+### Type aliases
+
+#### GitInfoKey
+
+Ƭ **GitInfoKey**: keyof [`GitInfo`](#interfacesdev_utilsgitinfomd)
 
 ## Classes
 
 
 <a name="classesdev_utilsdevutilsmd"></a>
 
-[@handy-common-utils/dev-utils](#readmemd) / [dev-utils](#modulesdev_utilsmd) / DevUtils
+[@handy-common-utils/dev-utils](#readmemd) / [dev-utils](../modules/dev_utils.md) / DevUtils
 
 ### Class: DevUtils
 
-[dev-utils](#modulesdev_utilsmd).DevUtils
+[dev-utils](../modules/dev_utils.md).DevUtils
 
-#### Table of contents
 
 ##### Constructors
 
@@ -203,15 +225,14 @@ Git related information
 
 <a name="interfacesdev_utilsgitinfomd"></a>
 
-[@handy-common-utils/dev-utils](#readmemd) / [dev-utils](#modulesdev_utilsmd) / GitInfo
+[@handy-common-utils/dev-utils](#readmemd) / [dev-utils](../modules/dev_utils.md) / GitInfo
 
 ### Interface: GitInfo
 
-[dev-utils](#modulesdev_utilsmd).GitInfo
+[dev-utils](../modules/dev_utils.md).GitInfo
 
 Git related information. See https://github.com/jacob-meacham/serverless-plugin-git-variables
 
-#### Table of contents
 
 ##### Properties
 
@@ -341,33 +362,4 @@ ___
 • **user**: `string`
 
 current Git user's name as configured by `git config user.name ...`
-
-## Modules
-
-
-<a name="modulesdev_utilsmd"></a>
-
-[@handy-common-utils/dev-utils](#readmemd) / dev-utils
-
-### Module: dev-utils
-
-#### Table of contents
-
-##### Classes
-
-- [DevUtils](#classesdev_utilsdevutilsmd)
-
-##### Interfaces
-
-- [GitInfo](#interfacesdev_utilsgitinfomd)
-
-##### Type aliases
-
-- [GitInfoKey](#gitinfokey)
-
-#### Type aliases
-
-##### GitInfoKey
-
-Ƭ **GitInfoKey**: keyof [`GitInfo`](#interfacesdev_utilsgitinfomd)
 <!-- API end -->
