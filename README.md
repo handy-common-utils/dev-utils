@@ -87,9 +87,9 @@ npm i serverless-plugin-git-variables --legacy-peer-deps
 
 #### Functions
 
-- [generateApiDocsMd](#generateApiDocsMd)
-- [generateApiDocsAndUpdateReadme](#generateapidocsandupdatereadme)
-- [getGitInfo](#getGitInfo)
+- [generateApiDocsMd = DevUtils.generateApiDocsMd](#generateApiDocsMd)
+- [generateApiDocsAndUpdateReadme = DevUtils.generateApiDocsAndUpdateReadme](#generateapidocsandupdatereadme)
+- [getGitInfo = DevUtils.getGitInfo](#getGitInfo)
 
 ### Exports
 

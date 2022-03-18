@@ -3,9 +3,9 @@
  *
  * ### Functions
  *
- * - [generateApiDocsMd](../classes/dev_utils.DevUtils.md#generateApiDocsMd)
- * - [generateApiDocsAndUpdateReadme](../classes/dev_utils.DevUtils.md#generateapidocsandupdatereadme)
- * - [getGitInfo](../classes/dev_utils.DevUtils.md#getGitInfo)
+ * - [generateApiDocsMd = DevUtils.generateApiDocsMd](../classes/dev_utils.DevUtils.md#generateApiDocsMd)
+ * - [generateApiDocsAndUpdateReadme = DevUtils.generateApiDocsAndUpdateReadme](../classes/dev_utils.DevUtils.md#generateapidocsandupdatereadme)
+ * - [getGitInfo = DevUtils.getGitInfo](../classes/dev_utils.DevUtils.md#getGitInfo)
  *
  * ## Exports
  *
