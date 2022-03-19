@@ -125,16 +125,17 @@ export abstract class DevUtils {
     await DevUtils.generateApiDocsMd(entryPoints, apiDocDir, typeDocOptions);
 
     // if there's only one module, use its .md as README.md
+    let elevatedModuleMdFileName;
     const moduleMdFileDir = path.join(apiDocDir, 'modules');
     const moduleMdFiles = fs.readdirSync(moduleMdFileDir);
     if (moduleMdFiles.length === 1) {
-      const moduleMdFileName = moduleMdFiles[0];
-      const moduleMdFile = path.join(moduleMdFileDir, moduleMdFileName);
+      elevatedModuleMdFileName = moduleMdFiles[0];
+      const moduleMdFile = path.join(moduleMdFileDir, elevatedModuleMdFileName);
       const readmeMdFile = path.join(apiDocDir, 'README.md');
       fs.moveSync(moduleMdFile, readmeMdFile, { overwrite: true });
       // fix links
       await FsUtils.replaceInFile(readmeMdFile, /]\(\.\.\//g, '](');
-      await FsUtils.replaceInFile(readmeMdFile, new RegExp(`]\\(${moduleMdFileName}#`, 'g'), '](#');
+      await FsUtils.replaceInFile(readmeMdFile, new RegExp(`]\\(${elevatedModuleMdFileName}#`, 'g'), '](#');
     }
 
     const apiDocsContentPromise = concatMd(apiDocDir, {
@@ -148,6 +149,9 @@ export abstract class DevUtils {
     .then(content => `<!-- API start -->${content}<!-- API end -->`)
     .then(content => FsUtils.escapeRegExpReplacement(content));
     await FsUtils.replaceInFile(readmeLocation, /<!-- API start -->([\s\S]*)<!-- API end -->/m, () => apiDocsContentPromise);
+    if (elevatedModuleMdFileName) {
+      await FsUtils.replaceInFile(readmeLocation, new RegExp(`]\\(\\.\\./modules/${elevatedModuleMdFileName}\\)`, 'g'), '](#readmemd)');
+    }
     await FsUtils.addSurroundingInFile(readmeLocation, /\*\*`example`\*\*([\s\S]*?)###/gm, '**`example`**\n```javascript\n', '```\n###');
   }
 
