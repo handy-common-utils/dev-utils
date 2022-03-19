@@ -102,8 +102,12 @@ export abstract class DevUtils {
       excludePrivate: true,
       excludeExternals: true,
       entryPointStrategy: 'expand',
+      // https://www.npmjs.com/package/typedoc-plugin-markdown
+      hideBreadcrumbs: true,
+      hideInPageTOC: true,
+      namedAnchors: false,
       ...options,
-    });
+    } as Partial<TypeDocOptions>);
 
     const project = app.convert()!;
     await app.generateDocs(project, API_DOCS_DIR);

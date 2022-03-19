@@ -79,8 +79,6 @@ npm i serverless-plugin-git-variables --legacy-peer-deps
 <!-- API start -->
 <a name="readmemd"></a>
 
-[@handy-common-utils/dev-utils](#readmemd) / dev-utils
-
 ## Module: dev-utils
 
 ### Re-exports
@@ -93,18 +91,13 @@ npm i serverless-plugin-git-variables --legacy-peer-deps
 
 ### Exports
 
-
-#### Classes
+### Classes
 
 - [DevUtils](#classesdev_utilsdevutilsmd)
 
-#### Interfaces
+### Interfaces
 
 - [GitInfo](#interfacesdev_utilsgitinfomd)
-
-#### Type aliases
-
-- [GitInfoKey](#gitinfokey)
 
 ### Type aliases
 
@@ -117,22 +110,9 @@ npm i serverless-plugin-git-variables --legacy-peer-deps
 
 <a name="classesdev_utilsdevutilsmd"></a>
 
-[@handy-common-utils/dev-utils](#readmemd) / [dev-utils](../modules/dev_utils.md) / DevUtils
-
 ### Class: DevUtils
 
-[dev-utils](../modules/dev_utils.md).DevUtils
-
-
-##### Constructors
-
-- [constructor](#constructor)
-
-##### Methods
-
-- [generateApiDocsAndUpdateReadme](#generateapidocsandupdatereadme)
-- [generateApiDocsMd](#generateapidocsmd)
-- [getGitInfo](#getgitinfo)
+[dev-utils](#readmemd).DevUtils
 
 #### Constructors
 
@@ -225,14 +205,11 @@ Git related information
 
 <a name="interfacesdev_utilsgitinfomd"></a>
 
-[@handy-common-utils/dev-utils](#readmemd) / [dev-utils](../modules/dev_utils.md) / GitInfo
-
 ### Interface: GitInfo
 
-[dev-utils](../modules/dev_utils.md).GitInfo
+[dev-utils](#readmemd).GitInfo
 
 Git related information. See https://github.com/jacob-meacham/serverless-plugin-git-variables
-
 
 #### Properties
 
