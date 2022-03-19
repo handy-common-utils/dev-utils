@@ -9,7 +9,7 @@
   },
   "scripts": {
     "pretest": "eslint . --ext .ts",
-    "test": "nyc mocha -r ts-node/register test/**/*.spec.ts",
+    "test": "nyc mocha -r ts-node/register test/*.spec.ts test/**/*.spec.ts",
     "fixPeerDependencies": "shx sed -i \"s/peerDependencies/optionalDependencies/\" node_modules/serverless-plugin-git-variables/package.json",
     "prepare": "shx rm -rf dist && npm run fixPeerDependencies && tsc && shx chmod +x dist/bin/*.js && es-check",
     "preversion": "npm run prepare && dist/bin/generate-api-docs-and-update-readme.js && git add README.md"

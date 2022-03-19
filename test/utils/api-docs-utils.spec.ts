@@ -3,7 +3,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import { convertRenderedPropertiesToTables } from '../../src/utils/api-docs-utils';
 
-describe.only('api-docs-utils', () => {
+describe('api-docs-utils', () => {
   const sample1Input = fs.readFileSync(path.join(__dirname, 'sample1.input.md'), 'utf-8');
   const sample1Expected = fs.readFileSync(path.join(__dirname, 'sample1.expected.md'), 'utf-8');
   const sample2Input = fs.readFileSync(path.join(__dirname, 'sample2.input.md'), 'utf-8');
