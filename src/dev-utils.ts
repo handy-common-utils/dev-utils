@@ -16,6 +16,7 @@ import concatMd from 'concat-md';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import { FsUtils } from '@handy-common-utils/fs-utils';
+import { convertRenderedPropertiesToTables } from './utils/api-docs-utils';
 const ServerlessGitVariables = require('serverless-plugin-git-variables');
 
 const API_DOCS_DIR = 'api-docs';
@@ -143,6 +144,7 @@ export abstract class DevUtils {
       startTitleLevelAt: 2,
     })
     .then(content => content.replace(/##+ Table of contents\n/g, ''))
+    .then(content => convertRenderedPropertiesToTables(content))
     .then(content => `<!-- API start -->${content}<!-- API end -->`)
     .then(content => FsUtils.escapeRegExpReplacement(content));
     await FsUtils.replaceInFile(readmeLocation, /<!-- API start -->([\s\S]*)<!-- API end -->/m, () => apiDocsContentPromise);
