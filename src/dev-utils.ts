@@ -6,6 +6,7 @@
  * - [generateApiDocsMd = DevUtils.generateApiDocsMd](../classes/dev_utils.DevUtils.md#generateApiDocsMd)
  * - [generateApiDocsAndUpdateReadme = DevUtils.generateApiDocsAndUpdateReadme](../classes/dev_utils.DevUtils.md#generateapidocsandupdatereadme)
  * - [getGitInfo = DevUtils.getGitInfo](../classes/dev_utils.DevUtils.md#getGitInfo)
+ * - [loadConfiguration = DevUtils.loadConfiguration](../classes/dev_utils.DevUtils.md#loadConfiguration)
  *
  * ## Exports
  *
@@ -15,6 +16,8 @@ import { Application, TypeDocReader, TSConfigReader, TypeDocOptions } from 'type
 import concatMd from 'concat-md';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import YAML from 'yaml';
+import { deepmerge } from 'deepmerge-ts';
 import { FsUtils } from '@handy-common-utils/fs-utils';
 import { convertRenderedPropertiesToTables } from './utils/api-docs-utils';
 const ServerlessGitVariables = require('serverless-plugin-git-variables');
@@ -234,6 +237,86 @@ export abstract class DevUtils {
     }));
     return info;
   }
+
+  private static readonly configurtionParsers = {
+    yaml: (text: string) => YAML.parse(text),
+    json: (text: string) => JSON.parse(text),
+  }
+
+  /**
+   * Default options for `loadConfiguration(...)`
+   */
+  static readonly DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION = {
+    fileDir: '.',
+    shouldCheckAncestorDir: (() => false) as (level: number, dirName: string, dirAbsolutePath: string) => boolean,
+    extensions: {
+      '.yaml': 'yaml',
+      '.yml': 'yaml',
+      '.json': 'json',
+    } as Record<string, keyof typeof DevUtils.configurtionParsers>,
+    fileEncoding: 'utf8' as BufferEncoding,
+    merge: deepmerge as <T = any>(...objs: T[]) => T,
+  }
+
+  /**
+   * Load configuration from YAML and/or JSON files.
+   * This function is capable of reading multiple configuration files from the same directory and/or a series of directories, and combine the configurations.
+   * The logic is: \
+   * 1. Start from the directory as specified by options.fileDir (default is ".") \
+   * 2. Try to read and parse all the files as specified by `${fileDir}${options.extensions.<key>}` as type `options.extensions.<value>` \
+   *    2.1 Unreadable (non-existing, no permission, etc.) files are ignored \
+   *    2.2 File content parsing error would halt the process with an Error \
+   *    2.3 Files specified at the top of `options.extensions` overrides those at the bottom \
+   *    2.4 Default configuration in `options.extensions` is: ".yaml" as YAML, ".yml" as YAML, ".json" as JSON. You can override it. \
+   * 3. Find the parent directory, and use `options.shouldCheckAncestorDir` to decide if parent directory should be checked. \
+   *    3.1 If parent directory should be checked, use parent directory and go to step 2 \
+   *    3.2 Otherwise finish up \
+   *    3.3 Default configuration of `options.shouldCheckAncestorDir` always returns false. You can override it. \
+   *        3.3.1 Three parameters are passed to the function: level (the direct parent directory has the leve value 1), basename of the directory, absolute path of the directory. \
+   * 4. Configurtions in child directories override configurations in parent directories. \
+   *
+   * Other options: \
+   * `fileEncoding`: encoding used when reading the file, default is 'utf8' \
+   * `merge`: the function for merging configurations, default is the deepmerge function from deepmerge-ts \
+   *
+   * @param fileNameBase Base part of the file name, usually this is the file name without extension, but you can also be creative.
+   * @param overrideOptions Options that would be combined with default options.
+   * @returns The combined configuration.
+   */
+  static loadConfiguration<T = any>(fileNameBase: string, overrideOptions?: Partial<typeof DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION>): T {
+    const options = { ...DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION, ...overrideOptions } as typeof DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION;
+    let { fileDir } = options;
+    let fileDirName = path.basename(fileDir);
+    const results = [];
+    let level = 0;
+    do {
+      for (const extension of Object.keys(options.extensions)) {
+        const fileType = options.extensions[extension];
+        const filePath = path.join(fileDir, `${fileNameBase}${extension}`);
+        let fileContent;
+        try {
+          fileContent = fs.readFileSync(filePath, options.fileEncoding);
+        } catch {
+          // ignore
+          continue;
+        }
+        const parse = DevUtils.configurtionParsers[fileType];
+        if (!parse) {
+          throw new Error(`No parser for file type "${fileType}", is it caused by a typo in options.extensions?`);
+        }
+        try {
+          const fileContentObj = parse(fileContent);
+          results.unshift(fileContentObj);
+        } catch (error: any) {
+          throw new Error(`Unable to parse the content in "${filePath}" as "${fileType}": ${error?.message}`);
+        }
+      }
+      fileDir = path.resolve(fileDir, '..');
+      fileDirName = path.basename(fileDir);
+      ++level;
+    } while (options.shouldCheckAncestorDir(level, fileDirName, fileDir));
+    return options.merge(...results) as T;
+  }
 }
 
 /** @ignore */
@@ -242,3 +325,5 @@ export const generateApiDocsMd = DevUtils.generateApiDocsMd;
 export const generateApiDocsAndUpdateReadme = DevUtils.generateApiDocsAndUpdateReadme;
 /** @ignore */
 export const getGitInfo = DevUtils.getGitInfo;
+/** @ignore */
+export const loadConfiguration = DevUtils.loadConfiguration;

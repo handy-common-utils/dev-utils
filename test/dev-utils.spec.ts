@@ -131,4 +131,20 @@ describe('DevUtils', () => {
       expect(info.branch).to.not.equal(fakeBranchName);
     });
   });
+
+  describe('loadConfiguration(...)', () => {
+    it('handles JSON', () => {
+      const r = DevUtils.loadConfiguration('package');
+      expect(r).to.be.an('object');
+      expect(r).to.have.property('dependencies');
+      expect(r.repository?.type).to.equal('git');
+    });
+    it('handles YAML', () => {
+      const r = DevUtils.loadConfiguration('.nycrc');
+      expect(r).to.be.an('object');
+      expect(r).to.have.property('exclude');
+      expect(r.exclude).to.be.an('array');
+      expect(r['skip-full']).to.equal(true);
+    });
+  });
 });

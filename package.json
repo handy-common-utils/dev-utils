@@ -43,6 +43,7 @@
   "dependencies": {
     "@handy-common-utils/fs-utils": "^1.0.15",
     "concat-md": "^0.3.8",
+    "deepmerge-ts": "^4.0.3",
     "serverless-plugin-git-variables": "^5.2.0",
     "string.prototype.replaceall": "^1.0.6",
     "typedoc": "^0.22.12",
