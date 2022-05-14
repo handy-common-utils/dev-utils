@@ -17,7 +17,7 @@ import concatMd from 'concat-md';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import YAML from 'yaml';
-import { deepmerge } from 'deepmerge-ts';
+import mergeDeep from 'lodash/merge';
 import { FsUtils } from '@handy-common-utils/fs-utils';
 import { convertRenderedPropertiesToTables } from './utils/api-docs-utils';
 const ServerlessGitVariables = require('serverless-plugin-git-variables');
@@ -255,7 +255,7 @@ export abstract class DevUtils {
       '.json': 'json',
     } as Record<string, keyof typeof DevUtils.configurtionParsers>,
     encoding: 'utf8' as BufferEncoding,
-    merge: deepmerge as <T = any>(...objs: T[]) => T,
+    merge: ((...objs: any[]) => mergeDeep({}, ...objs)) as <T = any>(...objs: T[]) => T,
   }
 
   /**
@@ -297,13 +297,13 @@ export abstract class DevUtils {
    *
    * Other options: \
    * `encoding`: encoding used when reading the file, default is 'utf8' \
-   * `merge`: the function for merging configurations, default is the deepmerge function from deepmerge-ts \
+   * `merge`: the function for merging configurations, the default implementation uses lodash/merge \
    *
    * @param fileNameBase Base part of the file name, usually this is the file name without extension, but you can also be creative.
    * @param overrideOptions Options that would be combined with default options.
    * @returns The combined configuration, or undefined if no configuration file can be found/read.
    */
-  static loadConfiguration<T = any>(fileNameBase: string, overrideOptions?: Partial<typeof DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION>): T {
+  static loadConfiguration<T = any>(fileNameBase: string, overrideOptions?: Partial<typeof DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION>): T | undefined {
     const options = { ...DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION, ...overrideOptions } as typeof DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION;
     let { dir } = options;
     let dirName = path.basename(dir);
@@ -335,6 +335,10 @@ export abstract class DevUtils {
       dirName = path.basename(dir);
       ++level;
     } while (options.shouldCheckAncestorDir(level, dirName, dir));
+
+    if (results.length === 0) {
+      return undefined;
+    }
     return options.merge(...results) as T;
   }
 }
