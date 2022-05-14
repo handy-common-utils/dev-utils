@@ -261,7 +261,27 @@ export abstract class DevUtils {
   /**
    * Load configuration from YAML and/or JSON files.
    * This function is capable of reading multiple configuration files from the same directory and/or a series of directories, and combine the configurations.
-   * The logic is: \
+   *
+   * @example
+   * // Pick up and merge (those to the left overrides those to the right) configurations from: ./my-config.yaml, ./my-config.yml, ./my-config.json
+   * const config = DevUtils.loadConfiguration('my-config');
+   *
+   * // Let .json override .yml and don't try to pick up .yaml
+   * const config = DevUtils.loadConfiguration('my-config', { extensions: {
+   *   '.json': 'json',
+   *   '.yml': 'yaml',
+   * } });
+   *
+   * // Search in parent, grand parent, and great grand parent directories as well
+   * const config = DevUtils.loadConfiguration(
+   *   'my-config',
+   *   {
+   *     dir: 'test/fixtures/dir_L1/dir_L2/dir_L3/dir_L4',
+   *     shouldCheckAncestorDir: (level, _dirName, _dirAbsolutePath) => level <= 3,
+   *   },
+   * );
+   *
+   * Internal logic of this function is: \
    * 1. Start from the directory as specified by options.dir (default is ".") \
    * 2. Try to read and parse all the files as specified by `${dir}${options.extensions.<key>}` as type `options.extensions.<value>` \
    *    2.1 Unreadable (non-existing, no permission, etc.) files are ignored \

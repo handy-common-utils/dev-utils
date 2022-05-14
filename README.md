@@ -82,6 +82,35 @@ It has these features:
 - If the configuration file has a format/syntax error and can't be parsed, an Error would be thrown.
 - If there's no configuration file picked up, it would return `undefined`.
 
+Code examples:
+
+```typescript
+// Pick up and merge (those to the left overrides those to the right) configurations from: ./my-config.yaml, ./my-config.yml, ./my-config.json
+const config = DevUtils.loadConfiguration('my-config');
+
+// Let .json override .yml and don't try to pick up .yaml
+const config = DevUtils.loadConfiguration('my-config', { extensions: {
+  '.json': 'json',
+  '.yml': 'yaml',
+} });
+
+// Pickup and merge (v3 overrides v2 overrides legacy) my-config-v3.yml, my-config-v2.yml, my-config.json
+const config = DevUtils.loadConfiguration('my-config', { extensions: {
+  '-v3.yml': 'yaml',
+  '-v2.yml': 'yaml',
+  '.json': 'json',
+} });
+
+// Search in parent, grand parent, and great grand parent directories as well
+const config = DevUtils.loadConfiguration(
+  'my-config',
+  {
+    dir: 'test/fixtures/dir_L1/dir_L2/dir_L3/dir_L4',
+    shouldCheckAncestorDir: (level, _dirName, _dirAbsolutePath) => level <= 3,
+  },
+);
+```
+
 # How to contribute
 
 Please note that for avoidding peer dependency `serverless` to be included,
