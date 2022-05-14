@@ -7,6 +7,10 @@ Tool chain utilities for the convenience of developers.
 [![CI](https://github.com/handy-common-utils/dev-utils/actions/workflows/ci.yml/badge.svg)](https://github.com/handy-common-utils/dev-utils/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/handy-common-utils/dev-utils/branch/master/graph/badge.svg?token=K92AF9D201)](https://codecov.io/gh/handy-common-utils/dev-utils)
 
+## Node.js version compatibility
+
+- Test cases have been verified with Node.js versions 10, 14, and 16.
+- Compilation targe is ES2017
 
 ## How to use - generating API doc and update README.md
 
