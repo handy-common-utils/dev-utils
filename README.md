@@ -149,6 +149,7 @@ npm i serverless-plugin-git-variables --legacy-peer-deps
 ### Interfaces
 
 - [GitInfo](#interfacesdev_utilsgitinfomd)
+- [LoadConfigurationOptions](#interfacesdev_utilsloadconfigurationoptionsmd)
 
 ### Type aliases
 
@@ -175,7 +176,7 @@ npm i serverless-plugin-git-variables --legacy-peer-deps
 
 | Property | Description |
 | --- | --- |
-| ▪ `Static` `Readonly` **DEFAULT\_OPTIONS\_FOR\_LOAD\_CONFIGURATION**: `Object` | Default options for `loadConfiguration(...)`<br><br>**Type declaration:**<br>| Name | Type |<br>| :------ | :------ |<br>| `dir` | `string` |<br>| `encoding` | `BufferEncoding` |<br>| `extensions` | `Record`<`string`, ``"json"`` \| ``"yaml"``\> |<br>| `merge` | <T\>(...`objs`: `T`[]) => `T` |<br>| `shouldCheckAncestorDir` | (`level`: `number`, `dirName`: `string`, `dirAbsolutePath`: `string`) => `boolean` | |
+| ▪ `Static` `Readonly` **DEFAULT\_OPTIONS\_FOR\_LOAD\_CONFIGURATION**: [`LoadConfigurationOptions`](#interfacesdev_utilsloadconfigurationoptionsmd)<`any`\> | Default options for `loadConfiguration(...)` |
 
 
 #### Methods
@@ -262,28 +263,52 @@ ___
 
 ##### loadConfiguration
 
-▸ `Static` **loadConfiguration**<`T`\>(`fileNameBase`, `overrideOptions?`): `T`
+▸ `Static` **loadConfiguration**<`T`\>(`fileNameBase`, `overrideOptions?`): `undefined` \| `T`
 
 Load configuration from YAML and/or JSON files.
 This function is capable of reading multiple configuration files from the same directory and/or a series of directories, and combine the configurations.
-The logic is: \
+
+**`example`**
+```javascript
+
+// Pick up and merge (those to the left overrides those to the right) configurations from: ./my-config.yaml, ./my-config.yml, ./my-config.json
+const config = DevUtils.loadConfiguration('my-config');
+
+// Let .json override .yml and don't try to pick up .yaml
+const config = DevUtils.loadConfiguration('my-config', { extensions: {
+  '.json': 'json',
+  '.yml': 'yaml',
+} });
+
+// Search in parent, grand parent, and great grand parent directories as well
+const config = DevUtils.loadConfiguration(
+  'my-config',
+  {
+    dir: 'test/fixtures/dir_L1/dir_L2/dir_L3/dir_L4',
+    shouldCheckAncestorDir: (level, _dirName, _dirAbsolutePath) => level <= 3,
+  },
+);
+
+Internal logic of this function is: \
 1. Start from the directory as specified by options.dir (default is ".") \
 2. Try to read and parse all the files as specified by `${dir}${options.extensions.<key>}` as type `options.extensions.<value>` \
    2.1 Unreadable (non-existing, no permission, etc.) files are ignored \
    2.2 File content parsing error would halt the process with an Error \
    2.3 Files specified at the top of `options.extensions` overrides those at the bottom \
    2.4 Default configuration in `options.extensions` is: ".yaml" as YAML, ".yml" as YAML, ".json" as JSON. You can override it. \
-3. Find the parent directory, and use `options.shouldCheckAncestorDir` to decide if parent directory should be checked. \
-   3.1 If parent directory should be checked, use parent directory and go to step 2 \
-   3.2 Otherwise finish up \
-   3.3 Default configuration of `options.shouldCheckAncestorDir` always returns false. You can override it. \
-       3.3.1 Three parameters are passed to the function: level (the direct parent directory has the leve value 1), basename of the directory, absolute path of the directory. \
+3. Find the parent directory, and use `options.shouldCheckAncestorDir` function to decide if parent directory should be checked. \
+   3.1 The function won't be called for the starting directory. The first call to this function would be for the parent directory with level=1. \
+   3.2 If parent directory should be checked, use parent directory and go to step 2 \
+   3.3 Otherwise finish up \
+   3.4 Default configuration of `options.shouldCheckAncestorDir` always returns false. You can override it. \
+       3.4.1 Three parameters are passed to the function: level (the immedicate parent directory has the leve value 1), basename of the directory, absolute path of the directory. \
 4. Configurtions in child directories override configurations in parent directories. \
 
 Other options: \
 `encoding`: encoding used when reading the file, default is 'utf8' \
-`merge`: the function for merging configurations, default is the deepmerge function from deepmerge-ts \
+`merge`: the function for merging configurations, the default implementation uses lodash/merge \
 
+```
 ###### Type parameters
 
 | Name | Type |
@@ -295,11 +320,11 @@ Other options: \
 | Name | Type | Description |
 | :------ | :------ | :------ |
 | `fileNameBase` | `string` | Base part of the file name, usually this is the file name without extension, but you can also be creative. |
-| `overrideOptions?` | `Partial`<{ `dir`: `string` = '.'; `encoding`: `BufferEncoding` ; `extensions`: `Record`<`string`, ``"json"`` \| ``"yaml"``\> ; `merge`: <T\>(...`objs`: `T`[]) => `T` ; `shouldCheckAncestorDir`: (`level`: `number`, `dirName`: `string`, `dirAbsolutePath`: `string`) => `boolean`  }\> | Options that would be combined with default options. |
+| `overrideOptions?` | `Partial`<[`LoadConfigurationOptions`](#interfacesdev_utilsloadconfigurationoptionsmd)<`T`\>\> | Options that would be combined with default options. |
 
 ###### Returns
 
-`T`
+`undefined` \| `T`
 
 The combined configuration, or undefined if no configuration file can be found/read.
 
@@ -331,6 +356,60 @@ Git related information. See https://github.com/jacob-meacham/serverless-plugin-
 | • **repository**: `string` | name of the git repository |
 | • **tag**: `string` | First tag on the current commit, or sha1/ID of the commit if there's no tag |
 | • **tags**: `string`[] | tags on the current commit, or sha1/ID of the commit if there's no tag |
-| • **user**: `string` | current Git user's name as configured by `git config user.name ...` |
+| • **user**: `string` | current Git user's name as configured by `git config user.name ...`<br><br><br><a name="interfacesdev_utilsloadconfigurationoptionsmd"></a><br><br>### Interface: LoadConfigurationOptions<T\><br><br>[dev-utils](#readmemd).LoadConfigurationOptions<br><br>Options for loadConfiguration(...) function |
 
+
+#### Type parameters
+
+| Name | Type |
+| :------ | :------ |
+| `T` | `any` |
+
+#### Properties
+
+| Property | Description |
+| --- | --- |
+| • **dir**: `string` | In which directory configuration file(s) should be picked up |
+| • **encoding**: `BufferEncoding` | Encoding of the configuration files |
+| • **extensions**: `Record`<`string`, ``"yaml"`` \| ``"json"``\> | File extensions that should be picked up. It is an object. For each property, the key is the file extension, the value is the file/parser type. |
+
+
+#### Methods
+
+##### merge
+
+▸ **merge**(...`objs`): `T`
+
+Function for merging the configurations from different files.
+It is supposed to merge all arguments from left to right (the one on the right overrides the one on the left).
+
+###### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `...objs` | `T`[] |
+
+###### Returns
+
+`T`
+
+___
+
+##### shouldCheckAncestorDir
+
+▸ **shouldCheckAncestorDir**(`level`, `dirName`, `dirAbsolutePath`): `boolean`
+
+Predicate function for deciding whether configuration files in the ancestor directory should be picked up
+
+###### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `level` | `number` |
+| `dirName` | `string` |
+| `dirAbsolutePath` | `string` |
+
+###### Returns
+
+`boolean`
 <!-- API end -->
