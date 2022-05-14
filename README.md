@@ -65,6 +65,23 @@ Details of the properties in this structure can be found in [the documentation o
 
 The functionality depends on [serverless-plugin-git-variables](https://github.com/jacob-meacham/serverless-plugin-git-variables). Check it out if you are interested.
 
+## How to use - loadConfiguration(...)
+
+This function (`loadConfiguration(...)` or `DevUtils.loadConfiguration(...)`) would be handy if you need to read configuration from YAML and/or JSON files.
+
+It has these features:
+
+- Find and parse files in the same directory with different extensions. By default it picks up and parses `.yaml`, `.yml` and `.json` files,
+  but you can customise file extensions and the order they override each other. You can also customise it to pick up different versions of
+  configuration files, such like: `{'-v3.yml': 'yaml', '-v2.yml': 'yaml', '.json': 'json'}`
+- Find and parse files in ancestor (parent, grandparent, etc.) directories as well. This is not the default behaviour, but you can provide a predicate function
+  to `options.shouldCheckAncestorDir` for customising this behaviour. If configuration files exit in both parent and child directories, the configuration
+  in the child directory overrides that in the parent directory.
+- Although you may not need it, you can customise how configurations are merged by providing the merge function to `options.merge`. 
+- If the configuration file does not exist, it would just be silently ignored.
+- If the configuration file has a format/syntax error and can't be parsed, an Error would be thrown.
+- If there's no configuration file picked up, it would return `undefined`.
+
 # How to contribute
 
 Please note that for avoidding peer dependency `serverless` to be included,
