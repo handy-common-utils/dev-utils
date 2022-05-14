@@ -105,6 +105,7 @@ npm i serverless-plugin-git-variables --legacy-peer-deps
 - [generateApiDocsMd = DevUtils.generateApiDocsMd](#generateApiDocsMd)
 - [generateApiDocsAndUpdateReadme = DevUtils.generateApiDocsAndUpdateReadme](#generateapidocsandupdatereadme)
 - [getGitInfo = DevUtils.getGitInfo](#getGitInfo)
+- [loadConfiguration = DevUtils.loadConfiguration](#loadConfiguration)
 
 ### Exports
 
@@ -136,6 +137,13 @@ npm i serverless-plugin-git-variables --legacy-peer-deps
 ##### constructor
 
 • **new DevUtils**()
+
+#### Properties
+
+| Property | Description |
+| --- | --- |
+| ▪ `Static` `Readonly` **DEFAULT\_OPTIONS\_FOR\_LOAD\_CONFIGURATION**: `Object` | Default options for `loadConfiguration(...)`<br><br>**Type declaration:**<br>| Name | Type |<br>| :------ | :------ |<br>| `dir` | `string` |<br>| `encoding` | `BufferEncoding` |<br>| `extensions` | `Record`<`string`, ``"json"`` \| ``"yaml"``\> |<br>| `merge` | <T\>(...`objs`: `T`[]) => `T` |<br>| `shouldCheckAncestorDir` | (`level`: `number`, `dirName`: `string`, `dirAbsolutePath`: `string`) => `boolean` | |
+
 
 #### Methods
 
@@ -216,6 +224,51 @@ they would be undefined in the returned object.
 `Promise`<`Partial`<[`GitInfo`](#interfacesdev_utilsgitinfomd)\>\>
 
 Git related information
+
+___
+
+##### loadConfiguration
+
+▸ `Static` **loadConfiguration**<`T`\>(`fileNameBase`, `overrideOptions?`): `T`
+
+Load configuration from YAML and/or JSON files.
+This function is capable of reading multiple configuration files from the same directory and/or a series of directories, and combine the configurations.
+The logic is: \
+1. Start from the directory as specified by options.dir (default is ".") \
+2. Try to read and parse all the files as specified by `${dir}${options.extensions.<key>}` as type `options.extensions.<value>` \
+   2.1 Unreadable (non-existing, no permission, etc.) files are ignored \
+   2.2 File content parsing error would halt the process with an Error \
+   2.3 Files specified at the top of `options.extensions` overrides those at the bottom \
+   2.4 Default configuration in `options.extensions` is: ".yaml" as YAML, ".yml" as YAML, ".json" as JSON. You can override it. \
+3. Find the parent directory, and use `options.shouldCheckAncestorDir` to decide if parent directory should be checked. \
+   3.1 If parent directory should be checked, use parent directory and go to step 2 \
+   3.2 Otherwise finish up \
+   3.3 Default configuration of `options.shouldCheckAncestorDir` always returns false. You can override it. \
+       3.3.1 Three parameters are passed to the function: level (the direct parent directory has the leve value 1), basename of the directory, absolute path of the directory. \
+4. Configurtions in child directories override configurations in parent directories. \
+
+Other options: \
+`encoding`: encoding used when reading the file, default is 'utf8' \
+`merge`: the function for merging configurations, default is the deepmerge function from deepmerge-ts \
+
+###### Type parameters
+
+| Name | Type |
+| :------ | :------ |
+| `T` | `any` |
+
+###### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `fileNameBase` | `string` | Base part of the file name, usually this is the file name without extension, but you can also be creative. |
+| `overrideOptions?` | `Partial`<{ `dir`: `string` = '.'; `encoding`: `BufferEncoding` ; `extensions`: `Record`<`string`, ``"json"`` \| ``"yaml"``\> ; `merge`: <T\>(...`objs`: `T`[]) => `T` ; `shouldCheckAncestorDir`: (`level`: `number`, `dirName`: `string`, `dirAbsolutePath`: `string`) => `boolean`  }\> | Options that would be combined with default options. |
+
+###### Returns
+
+`T`
+
+The combined configuration, or undefined if no configuration file can be found/read.
 
 ## Interfaces
 
