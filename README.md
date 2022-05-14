@@ -10,7 +10,8 @@ Tool chain utilities for the convenience of developers.
 ## Node.js version compatibility
 
 - Test cases have been verified with Node.js versions 10, 14, and 16.
-- Compilation targe is ES2017
+- Compilation targe is ES2017.
+- Compatibility with ES2017 has been checked. 
 
 ## How to use - generating API doc and update README.md
 
