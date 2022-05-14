@@ -89,6 +89,38 @@ export interface GitInfo {
 
 export type GitInfoKey = keyof GitInfo;
 
+const configurtionParsers = {
+  yaml: (text: string) => YAML.parse(text),
+  json: (text: string) => JSON.parse(text),
+};
+
+/**
+ * Options for loadConfiguration(...) function
+ */
+export interface LoadConfigurationOptions<T = any> {
+  /**
+   * In which directory configuration file(s) should be picked up
+   */
+  dir: string;
+  /**
+   * Predicate function for deciding whether configuration files in the ancestor directory should be picked up
+   */
+  shouldCheckAncestorDir: (level: number, dirName: string, dirAbsolutePath: string) => boolean;
+  /**
+   * File extensions that should be picked up. It is an object. For each property, the key is the file extension, the value is the file/parser type.
+   */
+  extensions: Record<string, keyof typeof configurtionParsers>;
+  /**
+   * Encoding of the configuration files
+   */
+  encoding: BufferEncoding;
+  /**
+   * Function for merging the configurations from different files.
+   * It is supposed to merge all arguments from left to right (the one on the right overrides the one on the left).
+   */
+  merge: (...objs: T[]) => T;
+}
+
 export abstract class DevUtils {
   static async generateApiDocsMd(entryPoints = ['./src'], apiDocDir = API_DOCS_DIR, options?: Partial<Omit<TypeDocOptions, 'out'|'entryPoints'>>): Promise<void> {
     const app = new Application();
@@ -238,25 +270,20 @@ export abstract class DevUtils {
     return info;
   }
 
-  private static readonly configurtionParsers = {
-    yaml: (text: string) => YAML.parse(text),
-    json: (text: string) => JSON.parse(text),
-  }
-
   /**
    * Default options for `loadConfiguration(...)`
    */
-  static readonly DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION = {
+  static readonly DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION: LoadConfigurationOptions = {
     dir: '.',
     shouldCheckAncestorDir: (() => false) as (level: number, dirName: string, dirAbsolutePath: string) => boolean,
     extensions: {
       '.yaml': 'yaml',
       '.yml': 'yaml',
       '.json': 'json',
-    } as Record<string, keyof typeof DevUtils.configurtionParsers>,
-    encoding: 'utf8' as BufferEncoding,
-    merge: ((...objs: any[]) => mergeDeep({}, ...objs)) as <T = any>(...objs: T[]) => T,
-  }
+    },
+    encoding: 'utf8',
+    merge: (...objs: any[]) => mergeDeep({}, ...objs),
+  };
 
   /**
    * Load configuration from YAML and/or JSON files.
@@ -288,11 +315,12 @@ export abstract class DevUtils {
    *    2.2 File content parsing error would halt the process with an Error \
    *    2.3 Files specified at the top of `options.extensions` overrides those at the bottom \
    *    2.4 Default configuration in `options.extensions` is: ".yaml" as YAML, ".yml" as YAML, ".json" as JSON. You can override it. \
-   * 3. Find the parent directory, and use `options.shouldCheckAncestorDir` to decide if parent directory should be checked. \
-   *    3.1 If parent directory should be checked, use parent directory and go to step 2 \
-   *    3.2 Otherwise finish up \
-   *    3.3 Default configuration of `options.shouldCheckAncestorDir` always returns false. You can override it. \
-   *        3.3.1 Three parameters are passed to the function: level (the direct parent directory has the leve value 1), basename of the directory, absolute path of the directory. \
+   * 3. Find the parent directory, and use `options.shouldCheckAncestorDir` function to decide if parent directory should be checked. \
+   *    3.1 The function won't be called for the starting directory. The first call to this function would be for the parent directory with level=1. \
+   *    3.2 If parent directory should be checked, use parent directory and go to step 2 \
+   *    3.3 Otherwise finish up \
+   *    3.4 Default configuration of `options.shouldCheckAncestorDir` always returns false. You can override it. \
+   *        3.4.1 Three parameters are passed to the function: level (the immedicate parent directory has the leve value 1), basename of the directory, absolute path of the directory. \
    * 4. Configurtions in child directories override configurations in parent directories. \
    *
    * Other options: \
@@ -303,11 +331,12 @@ export abstract class DevUtils {
    * @param overrideOptions Options that would be combined with default options.
    * @returns The combined configuration, or undefined if no configuration file can be found/read.
    */
-  static loadConfiguration<T = any>(fileNameBase: string, overrideOptions?: Partial<typeof DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION>): T | undefined {
-    const options = { ...DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION, ...overrideOptions } as typeof DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION;
+  static loadConfiguration<T = any>(fileNameBase: string, overrideOptions?: Partial<LoadConfigurationOptions<T>>): T | undefined {
+    const options = { ...DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION, ...overrideOptions };
+    const results = [];
+
     let { dir } = options;
     let dirName = path.basename(dir);
-    const results = [];
     let level = 0;
     do {
       for (const extension of Object.keys(options.extensions)) {
@@ -320,7 +349,7 @@ export abstract class DevUtils {
           // ignore
           continue;
         }
-        const parse = DevUtils.configurtionParsers[fileType];
+        const parse = configurtionParsers[fileType];
         if (!parse) {
           throw new Error(`No parser for file extension "${extension}" as type "${fileType}", is it caused by a typo in options.extensions?`);
         }
@@ -331,6 +360,7 @@ export abstract class DevUtils {
           throw new Error(`Unable to parse the content in "${filePath}" as "${fileType}": ${error?.message}`);
         }
       }
+
       dir = path.resolve(dir, '..');
       dirName = path.basename(dir);
       ++level;
