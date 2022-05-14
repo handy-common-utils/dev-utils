@@ -146,5 +146,85 @@ describe('DevUtils', () => {
       expect(r.exclude).to.be.an('array');
       expect(r['skip-full']).to.equal(true);
     });
+    it('by defaults lets .yml override .json in the same directory', () => {
+      const r = DevUtils.loadConfiguration('config', { dir: 'test/fixtures/dir_L1/dir_L2/dir_L3/dir_L4' });
+      expect(r).to.be.an('object');
+      expect(r).to.deep.equal({
+        dirName: 'L4',
+        fileName: 'config.yml',
+        'l4_config.json': true,
+        'l4_config.yml': true,
+      });
+    });
+    it('by customisation can let .json override .yml in the same directory', () => {
+      const r = DevUtils.loadConfiguration('config', { dir: 'test/fixtures/dir_L1/dir_L2/dir_L3/dir_L4', extensions: {
+        '.json': 'json',
+        '.yml': 'yaml',
+      } });
+      expect(r).to.be.an('object');
+      expect(r).to.deep.equal({
+        dirName: 'L4',
+        fileName: 'config.json',
+        'l4_config.json': true,
+        'l4_config.yml': true,
+      });
+    });
+    it('returns undefined if no configuration file can be found', () => {
+      const r = DevUtils.loadConfiguration('non-existing-config', { dir: 'test/fixtures/dir_L1/dir_L2/dir_L3/dir_L4' });
+      expect(r).to.be.undefined;
+    });
+    it('can search up ancestor directories', () => {
+      const searched: any[] = [];
+      const r = DevUtils.loadConfiguration(
+        'config',
+        {
+          dir: 'test/fixtures/dir_L1/dir_L2/dir_L3/dir_L4',
+          shouldCheckAncestorDir: (level, dirName, dirAbsolutePath) => {
+            searched.push({ level, dirName, dirAbsolutePath });
+            return level <= 3;
+          },
+        },
+      );
+      expect(r).to.be.an('object');
+      expect(r).to.deep.equal({
+        dirName: 'L4',
+        fileName: 'config.yml',
+        'l4_config.json': true,
+        'l4_config.yml': true,
+        'l3_config.yml': true,
+        'l2_config.yml': true,
+        'l2_config.json': true,
+        'l1_config.yaml': true,
+      });
+      expect(searched.map(x => ({ level: x.level, dirName: x.dirName }))).to.deep.equal([
+        {
+          level: 1,
+          dirName: 'dir_L3',
+        },
+        {
+          level: 2,
+          dirName: 'dir_L2',
+        },
+        {
+          level: 3,
+          dirName: 'dir_L1',
+        },
+        {
+          level: 4,
+          dirName: 'fixtures',
+        },
+      ]);
+      const pwd = path.resolve('.');
+      for (const dirInfo of searched) {
+        expect(dirInfo.dirAbsolutePath).to.match(new RegExp(`^${pwd}.+`));
+        expect(dirInfo.dirAbsolutePath).to.match(new RegExp(`.+${dirInfo.dirName}$`));
+      }
+    });
+    it('throws error if the JSON configuration file is invalid', () => {
+      expect(() => DevUtils.loadConfiguration('wrong', { dir: 'test/fixtures' })).to.throw(/Unable to parse the content/);
+    });
+    it('throws error if specified parser does not exist', () => {
+      expect(() => DevUtils.loadConfiguration('wrong', { dir: 'test/fixtures', extensions: { '.json': 'abc' as any } })).to.throw(/No parser.+\.json/);
+    });
   });
 });

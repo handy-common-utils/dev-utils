@@ -247,14 +247,14 @@ export abstract class DevUtils {
    * Default options for `loadConfiguration(...)`
    */
   static readonly DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION = {
-    fileDir: '.',
+    dir: '.',
     shouldCheckAncestorDir: (() => false) as (level: number, dirName: string, dirAbsolutePath: string) => boolean,
     extensions: {
       '.yaml': 'yaml',
       '.yml': 'yaml',
       '.json': 'json',
     } as Record<string, keyof typeof DevUtils.configurtionParsers>,
-    fileEncoding: 'utf8' as BufferEncoding,
+    encoding: 'utf8' as BufferEncoding,
     merge: deepmerge as <T = any>(...objs: T[]) => T,
   }
 
@@ -262,8 +262,8 @@ export abstract class DevUtils {
    * Load configuration from YAML and/or JSON files.
    * This function is capable of reading multiple configuration files from the same directory and/or a series of directories, and combine the configurations.
    * The logic is: \
-   * 1. Start from the directory as specified by options.fileDir (default is ".") \
-   * 2. Try to read and parse all the files as specified by `${fileDir}${options.extensions.<key>}` as type `options.extensions.<value>` \
+   * 1. Start from the directory as specified by options.dir (default is ".") \
+   * 2. Try to read and parse all the files as specified by `${dir}${options.extensions.<key>}` as type `options.extensions.<value>` \
    *    2.1 Unreadable (non-existing, no permission, etc.) files are ignored \
    *    2.2 File content parsing error would halt the process with an Error \
    *    2.3 Files specified at the top of `options.extensions` overrides those at the bottom \
@@ -276,33 +276,33 @@ export abstract class DevUtils {
    * 4. Configurtions in child directories override configurations in parent directories. \
    *
    * Other options: \
-   * `fileEncoding`: encoding used when reading the file, default is 'utf8' \
+   * `encoding`: encoding used when reading the file, default is 'utf8' \
    * `merge`: the function for merging configurations, default is the deepmerge function from deepmerge-ts \
    *
    * @param fileNameBase Base part of the file name, usually this is the file name without extension, but you can also be creative.
    * @param overrideOptions Options that would be combined with default options.
-   * @returns The combined configuration.
+   * @returns The combined configuration, or undefined if no configuration file can be found/read.
    */
   static loadConfiguration<T = any>(fileNameBase: string, overrideOptions?: Partial<typeof DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION>): T {
     const options = { ...DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION, ...overrideOptions } as typeof DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION;
-    let { fileDir } = options;
-    let fileDirName = path.basename(fileDir);
+    let { dir } = options;
+    let dirName = path.basename(dir);
     const results = [];
     let level = 0;
     do {
       for (const extension of Object.keys(options.extensions)) {
         const fileType = options.extensions[extension];
-        const filePath = path.join(fileDir, `${fileNameBase}${extension}`);
+        const filePath = path.join(dir, `${fileNameBase}${extension}`);
         let fileContent;
         try {
-          fileContent = fs.readFileSync(filePath, options.fileEncoding);
+          fileContent = fs.readFileSync(filePath, options.encoding);
         } catch {
           // ignore
           continue;
         }
         const parse = DevUtils.configurtionParsers[fileType];
         if (!parse) {
-          throw new Error(`No parser for file type "${fileType}", is it caused by a typo in options.extensions?`);
+          throw new Error(`No parser for file extension "${extension}" as type "${fileType}", is it caused by a typo in options.extensions?`);
         }
         try {
           const fileContentObj = parse(fileContent);
@@ -311,10 +311,10 @@ export abstract class DevUtils {
           throw new Error(`Unable to parse the content in "${filePath}" as "${fileType}": ${error?.message}`);
         }
       }
-      fileDir = path.resolve(fileDir, '..');
-      fileDirName = path.basename(fileDir);
+      dir = path.resolve(dir, '..');
+      dirName = path.basename(dir);
       ++level;
-    } while (options.shouldCheckAncestorDir(level, fileDirName, fileDir));
+    } while (options.shouldCheckAncestorDir(level, dirName, dir));
     return options.merge(...results) as T;
   }
 }
