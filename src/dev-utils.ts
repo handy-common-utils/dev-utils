@@ -166,15 +166,17 @@ export abstract class DevUtils {
     // if there's only one module, use its .md as README.md
     let elevatedModuleMdFileName;
     const moduleMdFileDir = path.join(apiDocDir, 'modules');
-    const moduleMdFiles = fs.readdirSync(moduleMdFileDir);
-    if (moduleMdFiles.length === 1) {
-      elevatedModuleMdFileName = moduleMdFiles[0];
-      const moduleMdFile = path.join(moduleMdFileDir, elevatedModuleMdFileName);
-      const readmeMdFile = path.join(apiDocDir, 'README.md');
-      fs.moveSync(moduleMdFile, readmeMdFile, { overwrite: true });
-      // fix links
-      await FsUtils.replaceInFile(readmeMdFile, /]\(\.\.\//g, '](');
-      await FsUtils.replaceInFile(readmeMdFile, new RegExp(`]\\(${elevatedModuleMdFileName}#`, 'g'), '](#');
+    if (fs.existsSync(moduleMdFileDir)) {
+      const moduleMdFiles = fs.readdirSync(moduleMdFileDir);
+      if (moduleMdFiles.length === 1) {
+        elevatedModuleMdFileName = moduleMdFiles[0];
+        const moduleMdFile = path.join(moduleMdFileDir, elevatedModuleMdFileName);
+        const readmeMdFile = path.join(apiDocDir, 'README.md');
+        fs.moveSync(moduleMdFile, readmeMdFile, { overwrite: true });
+        // fix links
+        await FsUtils.replaceInFile(readmeMdFile, /]\(\.\.\//g, '](');
+        await FsUtils.replaceInFile(readmeMdFile, new RegExp(`]\\(${elevatedModuleMdFileName}#`, 'g'), '](#');
+      }
     }
 
     const apiDocsContentPromise = concatMd(apiDocDir, {
