@@ -201,7 +201,7 @@ DevUtils.generateApiDocsAndUpdateReadme(readmePath, entryPoints, apiDocDir);
 | `readmeLocation` | `string` | `README_MD_FILE` | location of the README.md file |
 | `entryPoints` | `string`[] | `undefined` | Entry points for generating API documentation |
 | `apiDocDir` | `string` | `API_DOCS_DIR` | temporary directory for storing intemediate documenation files |
-| `typeDocOptions?` | `Partial`<`Omit`<`TypeDocOptions`, ``"entryPoints"`` \| ``"out"``\>\> | `undefined` | Options for TypeDoc |
+| `typeDocOptions?` | `Partial`<`Omit`<`TypeDocOptions`, ``"out"`` \| ``"entryPoints"``\>\> | `undefined` | Options for TypeDoc |
 
 ###### Returns
 
@@ -221,7 +221,7 @@ ___
 | :------ | :------ | :------ |
 | `entryPoints` | `string`[] | `undefined` |
 | `apiDocDir` | `string` | `API_DOCS_DIR` |
-| `options?` | `Partial`<`Omit`<`TypeDocOptions`, ``"entryPoints"`` \| ``"out"``\>\> | `undefined` |
+| `options?` | `Partial`<`Omit`<`TypeDocOptions`, ``"out"`` \| ``"entryPoints"``\>\> | `undefined` |
 
 ###### Returns
 
@@ -372,7 +372,7 @@ Git related information. See https://github.com/jacob-meacham/serverless-plugin-
 | --- | --- |
 | • **dir**: `string` | In which directory configuration file(s) should be picked up |
 | • **encoding**: `BufferEncoding` | Encoding of the configuration files |
-| • **extensions**: `Record`<`string`, ``"yaml"`` \| ``"json"``\> | File extensions that should be picked up. It is an object. For each property, the key is the file extension, the value is the file/parser type. |
+| • **extensions**: `Record`<`string`, ``"json"`` \| ``"yaml"``\> | File extensions that should be picked up. It is an object. For each property, the key is the file extension, the value is the file/parser type. |
 
 
 #### Methods
