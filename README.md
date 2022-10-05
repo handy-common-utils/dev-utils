@@ -269,6 +269,25 @@ ___
 Load configuration from YAML and/or JSON files.
 This function is capable of reading multiple configuration files from the same directory and/or a series of directories, and combine the configurations.
 
+Internal logic of this function is: \
+1. Start from the directory as specified by options.dir (default is ".") \
+2. Try to read and parse all the files as specified by `${dir}${options.extensions.<key>}` as type `options.extensions.<value>` \
+   2.1 Unreadable (non-existing, no permission, etc.) files are ignored \
+   2.2 File content parsing error would halt the process with an Error \
+   2.3 Files specified at the top of `options.extensions` overrides those at the bottom \
+   2.4 Default configuration in `options.extensions` is: ".yaml" as YAML, ".yml" as YAML, ".json" as JSON. You can override it. \
+3. Find the parent directory, and use `options.shouldCheckAncestorDir` function to decide if parent directory should be checked. \
+   3.1 The function won't be called for the starting directory. The first call to this function would be for the parent directory with level=1. \
+   3.2 If parent directory should be checked, use parent directory and go to step 2 \
+   3.3 Otherwise finish up \
+   3.4 Default configuration of `options.shouldCheckAncestorDir` always returns false. You can override it. \
+       3.4.1 Three parameters are passed to the function: level (the immedicate parent directory has the leve value 1), basename of the directory, absolute path of the directory. \
+4. Configurtions in child directories override configurations in parent directories. \
+
+Other options: \
+`encoding`: encoding used when reading the file, default is 'utf8' \
+`merge`: the function for merging configurations, the default implementation uses lodash/merge \
+
 **`example`**
 ```javascript
 
@@ -289,25 +308,6 @@ const config = DevUtils.loadConfiguration(
     shouldCheckAncestorDir: (level, _dirName, _dirAbsolutePath) => level <= 3,
   },
 );
-
-Internal logic of this function is: \
-1. Start from the directory as specified by options.dir (default is ".") \
-2. Try to read and parse all the files as specified by `${dir}${options.extensions.<key>}` as type `options.extensions.<value>` \
-   2.1 Unreadable (non-existing, no permission, etc.) files are ignored \
-   2.2 File content parsing error would halt the process with an Error \
-   2.3 Files specified at the top of `options.extensions` overrides those at the bottom \
-   2.4 Default configuration in `options.extensions` is: ".yaml" as YAML, ".yml" as YAML, ".json" as JSON. You can override it. \
-3. Find the parent directory, and use `options.shouldCheckAncestorDir` function to decide if parent directory should be checked. \
-   3.1 The function won't be called for the starting directory. The first call to this function would be for the parent directory with level=1. \
-   3.2 If parent directory should be checked, use parent directory and go to step 2 \
-   3.3 Otherwise finish up \
-   3.4 Default configuration of `options.shouldCheckAncestorDir` always returns false. You can override it. \
-       3.4.1 Three parameters are passed to the function: level (the immedicate parent directory has the leve value 1), basename of the directory, absolute path of the directory. \
-4. Configurtions in child directories override configurations in parent directories. \
-
-Other options: \
-`encoding`: encoding used when reading the file, default is 'utf8' \
-`merge`: the function for merging configurations, the default implementation uses lodash/merge \
 
 ```
 ###### Type parameters
@@ -379,7 +379,7 @@ Git related information. See https://github.com/jacob-meacham/serverless-plugin-
 
 ##### merge
 
-▸ **merge**(...`objs`): `T`
+▸ **merge**(`childConfig`, `parentConfig`): `T`
 
 Function for merging the configurations from different files.
 It is supposed to merge all arguments from left to right (the one on the right overrides the one on the left).
@@ -388,7 +388,8 @@ It is supposed to merge all arguments from left to right (the one on the right o
 
 | Name | Type |
 | :------ | :------ |
-| `...objs` | `T`[] |
+| `childConfig` | `T` |
+| `parentConfig` | `T` |
 
 ###### Returns
 
@@ -398,7 +399,7 @@ ___
 
 ##### shouldCheckAncestorDir
 
-▸ **shouldCheckAncestorDir**(`level`, `dirName`, `dirAbsolutePath`): `boolean`
+▸ **shouldCheckAncestorDir**(`level`, `dirName`, `dirAbsolutePath`, `consolidatedConfiguration`): `boolean`
 
 Predicate function for deciding whether configuration files in the ancestor directory should be picked up
 
@@ -409,6 +410,7 @@ Predicate function for deciding whether configuration files in the ancestor dire
 | `level` | `number` |
 | `dirName` | `string` |
 | `dirAbsolutePath` | `string` |
+| `consolidatedConfiguration` | `undefined` \| `Partial`<`T`\> |
 
 ###### Returns
 
