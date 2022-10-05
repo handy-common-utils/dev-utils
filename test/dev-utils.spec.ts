@@ -221,6 +221,16 @@ describe('DevUtils', () => {
         expect(dirInfo.dirAbsolutePath).to.match(new RegExp(`.+${dirInfo.dirName}$`));
       }
     });
+    it('does not loop infinitely when searching up ancestor directories', () => {
+      const r = DevUtils.loadConfiguration(
+        'config',
+        {
+          dir: 'test/fixtures/dir_L1/dir_L2/dir_L3/dir_L4',
+          shouldCheckAncestorDir: () => true,
+        },
+      );
+      expect(r).to.be.an('object');
+    });
     it('throws error if the JSON configuration file is invalid', () => {
       expect(() => DevUtils.loadConfiguration('wrong', { dir: 'test/fixtures' })).to.throw(/Unable to parse the content/);
     });

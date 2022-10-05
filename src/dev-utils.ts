@@ -363,7 +363,11 @@ export abstract class DevUtils {
         }
       }
 
-      dir = path.resolve(dir, '..');
+      const parentDir = path.resolve(dir, '..');
+      if (parentDir === dir) { // fs root
+        break;
+      }
+      dir = parentDir;
       dirName = path.basename(dir);
       ++level;
     } while (options.shouldCheckAncestorDir(level, dirName, dir, consolidatedConfiguration));
