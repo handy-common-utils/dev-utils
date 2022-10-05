@@ -179,8 +179,8 @@ describe('DevUtils', () => {
         'config',
         {
           dir: 'test/fixtures/dir_L1/dir_L2/dir_L3/dir_L4',
-          shouldCheckAncestorDir: (level, dirName, dirAbsolutePath) => {
-            searched.push({ level, dirName, dirAbsolutePath });
+          shouldCheckAncestorDir: (level, dirName, dirAbsolutePath, consolidatedConfiguration) => {
+            searched.push({ level, dirName, dirAbsolutePath, consolidatedConfiguration });
             return level <= 3;
           },
         },
@@ -196,6 +196,7 @@ describe('DevUtils', () => {
         'l2_config.json': true,
         'l1_config.yaml': true,
       });
+      expect(searched.find(x => x.consolidatedConfiguration == null)).to.be.undefined;
       expect(searched.map(x => ({ level: x.level, dirName: x.dirName }))).to.deep.equal([
         {
           level: 1,

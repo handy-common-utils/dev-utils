@@ -105,7 +105,7 @@ export interface LoadConfigurationOptions<T = any> {
   /**
    * Predicate function for deciding whether configuration files in the ancestor directory should be picked up
    */
-  shouldCheckAncestorDir: (level: number, dirName: string, dirAbsolutePath: string) => boolean;
+  shouldCheckAncestorDir: (level: number, dirName: string, dirAbsolutePath: string, consolidatedConfiguration: Partial<T>|undefined) => boolean;
   /**
    * File extensions that should be picked up. It is an object. For each property, the key is the file extension, the value is the file/parser type.
    */
@@ -118,7 +118,7 @@ export interface LoadConfigurationOptions<T = any> {
    * Function for merging the configurations from different files.
    * It is supposed to merge all arguments from left to right (the one on the right overrides the one on the left).
    */
-  merge: (...objs: T[]) => T;
+  merge: (childConfig: T, parentConfig: T) => T;
 }
 
 export abstract class DevUtils {
@@ -277,38 +277,19 @@ export abstract class DevUtils {
    */
   static readonly DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION: LoadConfigurationOptions = {
     dir: '.',
-    shouldCheckAncestorDir: (() => false) as (level: number, dirName: string, dirAbsolutePath: string) => boolean,
+    shouldCheckAncestorDir: () => false,
     extensions: {
       '.yaml': 'yaml',
       '.yml': 'yaml',
       '.json': 'json',
     },
     encoding: 'utf8',
-    merge: (...objs: any[]) => mergeDeep({}, ...objs),
+    merge: (childConfig: any, parentConfig: any) => mergeDeep(childConfig, parentConfig),
   };
 
   /**
    * Load configuration from YAML and/or JSON files.
    * This function is capable of reading multiple configuration files from the same directory and/or a series of directories, and combine the configurations.
-   *
-   * @example
-   * // Pick up and merge (those to the left overrides those to the right) configurations from: ./my-config.yaml, ./my-config.yml, ./my-config.json
-   * const config = DevUtils.loadConfiguration('my-config');
-   *
-   * // Let .json override .yml and don't try to pick up .yaml
-   * const config = DevUtils.loadConfiguration('my-config', { extensions: {
-   *   '.json': 'json',
-   *   '.yml': 'yaml',
-   * } });
-   *
-   * // Search in parent, grand parent, and great grand parent directories as well
-   * const config = DevUtils.loadConfiguration(
-   *   'my-config',
-   *   {
-   *     dir: 'test/fixtures/dir_L1/dir_L2/dir_L3/dir_L4',
-   *     shouldCheckAncestorDir: (level, _dirName, _dirAbsolutePath) => level <= 3,
-   *   },
-   * );
    *
    * Internal logic of this function is: \
    * 1. Start from the directory as specified by options.dir (default is ".") \
@@ -329,13 +310,32 @@ export abstract class DevUtils {
    * `encoding`: encoding used when reading the file, default is 'utf8' \
    * `merge`: the function for merging configurations, the default implementation uses lodash/merge \
    *
+   * @example
+   * // Pick up and merge (those to the left overrides those to the right) configurations from: ./my-config.yaml, ./my-config.yml, ./my-config.json
+   * const config = DevUtils.loadConfiguration('my-config');
+   *
+   * // Let .json override .yml and don't try to pick up .yaml
+   * const config = DevUtils.loadConfiguration('my-config', { extensions: {
+   *   '.json': 'json',
+   *   '.yml': 'yaml',
+   * } });
+   *
+   * // Search in parent, grand parent, and great grand parent directories as well
+   * const config = DevUtils.loadConfiguration(
+   *   'my-config',
+   *   {
+   *     dir: 'test/fixtures/dir_L1/dir_L2/dir_L3/dir_L4',
+   *     shouldCheckAncestorDir: (level, _dirName, _dirAbsolutePath) => level <= 3,
+   *   },
+   * );
+   *
    * @param fileNameBase Base part of the file name, usually this is the file name without extension, but you can also be creative.
    * @param overrideOptions Options that would be combined with default options.
    * @returns The combined configuration, or undefined if no configuration file can be found/read.
    */
   static loadConfiguration<T = any>(fileNameBase: string, overrideOptions?: Partial<LoadConfigurationOptions<T>>): T | undefined {
     const options = { ...DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION, ...overrideOptions };
-    const results = [];
+    let consolidatedConfiguration: T | undefined;
 
     let { dir } = options;
     let dirName = path.basename(dir);
@@ -357,7 +357,7 @@ export abstract class DevUtils {
         }
         try {
           const fileContentObj = parse(fileContent);
-          results.unshift(fileContentObj);
+          consolidatedConfiguration = consolidatedConfiguration ? options.merge(fileContentObj, consolidatedConfiguration) : fileContentObj;
         } catch (error: any) {
           throw new Error(`Unable to parse the content in "${filePath}" as "${fileType}": ${error?.message}`);
         }
@@ -366,12 +366,9 @@ export abstract class DevUtils {
       dir = path.resolve(dir, '..');
       dirName = path.basename(dir);
       ++level;
-    } while (options.shouldCheckAncestorDir(level, dirName, dir));
+    } while (options.shouldCheckAncestorDir(level, dirName, dir, consolidatedConfiguration));
 
-    if (results.length === 0) {
-      return undefined;
-    }
-    return options.merge(...results) as T;
+    return consolidatedConfiguration;
   }
 }
 
