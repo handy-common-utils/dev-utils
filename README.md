@@ -281,7 +281,7 @@ Internal logic of this function is: \
    3.2 If parent directory should be checked, use parent directory and go to step 2 \
    3.3 Otherwise finish up \
    3.4 Default configuration of `options.shouldCheckAncestorDir` always returns false. You can override it. \
-       3.4.1 Three parameters are passed to the function: level (the immedicate parent directory has the leve value 1), basename of the directory, absolute path of the directory. \
+       3.4.1 Several parameters are passed to the function: level (the immedicate parent directory has the leve value 1), basename of the directory, absolute path of the directory, already consolidated/merged configurations, absolute path of previous directory . \
 4. Configurtions in child directories override configurations in parent directories. \
 
 Other options: \
@@ -399,7 +399,7 @@ ___
 
 ##### shouldCheckAncestorDir
 
-▸ **shouldCheckAncestorDir**(`level`, `dirName`, `dirAbsolutePath`, `consolidatedConfiguration`): `boolean`
+▸ **shouldCheckAncestorDir**(`level`, `dirName`, `dirAbsolutePath`, `consolidatedConfiguration`, `previousDirAbsolutePath`): `boolean`
 
 Predicate function for deciding whether configuration files in the ancestor directory should be picked up
 
@@ -411,6 +411,7 @@ Predicate function for deciding whether configuration files in the ancestor dire
 | `dirName` | `string` |
 | `dirAbsolutePath` | `string` |
 | `consolidatedConfiguration` | `undefined` \| `Partial`<`T`\> |
+| `previousDirAbsolutePath` | `string` |
 
 ###### Returns
 
