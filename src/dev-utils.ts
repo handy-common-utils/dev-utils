@@ -216,7 +216,12 @@ export abstract class DevUtils {
    * @returns Git related information
    */
   static async getGitInfo(whitelistKeys?: GitInfoKey[], checkEnvironmentVariables = true, reportErrors = false): Promise<Partial<GitInfo>> {
-    const slsGitVars = new ServerlessGitVariables({});
+    const slsGitVars = new ServerlessGitVariables({
+      service: {
+        getAllFunctions: () => [],
+        custom: {},
+      },
+    });
     const allPossibleKeys: GitInfoKey[] = [
       'repository',
       'commitIdShort',
