@@ -303,7 +303,7 @@ export abstract class DevUtils {
    *    3.2 If parent directory should be checked, use parent directory and go to step 2 \
    *    3.3 Otherwise finish up \
    *    3.4 Default configuration of `options.shouldCheckAncestorDir` always returns false. You can override it. \
-   *        3.4.1 Several parameters are passed to the function: level (the immedicate parent directory has the leve value 1), basename of the directory, absolute path of the directory, already consolidated/merged configurations, absolute path of previous directory . \
+   *        3.4.1 Several parameters are passed to the function: level (the immedicate parent directory has the leve value 1), basename of the directory, absolute path of the directory, already consolidated/merged configurations, absolute path of the directory containing the last/previous file picked up. \
    * 4. Configurtions in child directories override configurations in parent directories. \
    *
    * Other options: \
@@ -359,20 +359,20 @@ export abstract class DevUtils {
         try {
           const fileContentObj = parse(fileContent);
           consolidatedConfiguration = consolidatedConfiguration ? options.merge(fileContentObj, consolidatedConfiguration) : fileContentObj;
+          previousDir = path.resolve(dir);
         } catch (error: any) {
           throw new Error(`Unable to parse the content in "${filePath}" as "${fileType}": ${error?.message}`);
         }
       }
 
-      previousDir = path.resolve(dir);
       const parentDir = path.resolve(dir, '..');
-      if (parentDir === previousDir) { // fs root
+      if (parentDir === dir) { // fs root
         break;
       }
       dir = parentDir;
       dirName = path.basename(dir);
       ++level;
-    } while (options.shouldCheckAncestorDir(level, dirName, dir, consolidatedConfiguration, previousDir));
+    } while (options.shouldCheckAncestorDir(level, dirName, dir, consolidatedConfiguration, previousDir!));
 
     return consolidatedConfiguration;
   }
