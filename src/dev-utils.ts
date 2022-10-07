@@ -105,7 +105,7 @@ export interface LoadConfigurationOptions<T = any> {
   /**
    * Predicate function for deciding whether configuration files in the ancestor directory should be picked up
    */
-  shouldCheckAncestorDir: (level: number, dirName: string, dirAbsolutePath: string, consolidatedConfiguration: Partial<T>|undefined) => boolean;
+  shouldCheckAncestorDir: (level: number, dirName: string, dirAbsolutePath: string, consolidatedConfiguration: Partial<T>|undefined, previousDirAbsolutePath: string) => boolean;
   /**
    * File extensions that should be picked up. It is an object. For each property, the key is the file extension, the value is the file/parser type.
    */
@@ -303,7 +303,7 @@ export abstract class DevUtils {
    *    3.2 If parent directory should be checked, use parent directory and go to step 2 \
    *    3.3 Otherwise finish up \
    *    3.4 Default configuration of `options.shouldCheckAncestorDir` always returns false. You can override it. \
-   *        3.4.1 Three parameters are passed to the function: level (the immedicate parent directory has the leve value 1), basename of the directory, absolute path of the directory. \
+   *        3.4.1 Several parameters are passed to the function: level (the immedicate parent directory has the leve value 1), basename of the directory, absolute path of the directory, already consolidated/merged configurations, absolute path of previous directory . \
    * 4. Configurtions in child directories override configurations in parent directories. \
    *
    * Other options: \
@@ -339,6 +339,7 @@ export abstract class DevUtils {
 
     let { dir } = options;
     let dirName = path.basename(dir);
+    let previousDir: string;
     let level = 0;
     do {
       for (const extension of Object.keys(options.extensions)) {
@@ -363,14 +364,15 @@ export abstract class DevUtils {
         }
       }
 
+      previousDir = path.resolve(dir);
       const parentDir = path.resolve(dir, '..');
-      if (parentDir === dir) { // fs root
+      if (parentDir === previousDir) { // fs root
         break;
       }
       dir = parentDir;
       dirName = path.basename(dir);
       ++level;
-    } while (options.shouldCheckAncestorDir(level, dirName, dir, consolidatedConfiguration));
+    } while (options.shouldCheckAncestorDir(level, dirName, dir, consolidatedConfiguration, previousDir));
 
     return consolidatedConfiguration;
   }
