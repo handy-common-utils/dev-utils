@@ -25,7 +25,8 @@ describe('DevUtils', () => {
       expect(content).to.not.include(PATTERN_STRING);
       expect(content).to.include('generateApiDocsAndUpdateReadme');
       expect(content).to.not.include('Static**');
-      expect(content).to.include('**`example`**\n```javascript\n');
+      console.log(content);
+      expect(content).to.include('**`Example`**\n\n```ts\n');
     });
   });
 
