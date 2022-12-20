@@ -152,7 +152,7 @@ npm i serverless-plugin-git-variables --legacy-peer-deps
 - [GitInfo](#interfacesdev_utilsgitinfomd)
 - [LoadConfigurationOptions](#interfacesdev_utilsloadconfigurationoptionsmd)
 
-### Type aliases
+### Type Aliases
 
 #### GitInfoKey
 
@@ -177,7 +177,7 @@ npm i serverless-plugin-git-variables --legacy-peer-deps
 
 | Property | Description |
 | --- | --- |
-| ▪ `Static` `Readonly` **DEFAULT\_OPTIONS\_FOR\_LOAD\_CONFIGURATION**: [`LoadConfigurationOptions`](#interfacesdev_utilsloadconfigurationoptionsmd)<`any`\> | Default options for `loadConfiguration(...)` |
+| `Static` `Readonly` **DEFAULT\_OPTIONS\_FOR\_LOAD\_CONFIGURATION**: [`LoadConfigurationOptions`](#interfacesdev_utilsloadconfigurationoptionsmd)<`any`\> | Default options for `loadConfiguration(...)` |
 
 
 #### Methods
@@ -188,12 +188,12 @@ npm i serverless-plugin-git-variables --legacy-peer-deps
 
 Generate API documentation and insert it into README.md file.
 
-**`example`**
-```javascript
+**`Example`**
 
+```ts
 DevUtils.generateApiDocsAndUpdateReadme(readmePath, entryPoints, apiDocDir);
-
 ```
+
 ###### Parameters
 
 | Name | Type | Default value | Description |
@@ -288,9 +288,9 @@ Other options: \
 `encoding`: encoding used when reading the file, default is 'utf8' \
 `merge`: the function for merging configurations, the default implementation uses lodash/merge \
 
-**`example`**
-```javascript
+**`Example`**
 
+```ts
 // Pick up and merge (those to the left overrides those to the right) configurations from: ./my-config.yaml, ./my-config.yml, ./my-config.json
 const config = DevUtils.loadConfiguration('my-config');
 
@@ -308,8 +308,8 @@ const config = DevUtils.loadConfiguration(
     shouldCheckAncestorDir: (level, _dirName, _dirAbsolutePath) => level <= 3,
   },
 );
-
 ```
+
 ###### Type parameters
 
 | Name | Type |
@@ -344,21 +344,30 @@ Git related information. See https://github.com/jacob-meacham/serverless-plugin-
 
 | Property | Description |
 | --- | --- |
-| • **branch**: `string` | name of the current branch |
-| • **commitIdLong**: `string` | hash of the current commit, a.k.a. commit ID, in full |
-| • **commitIdShort**: `string` | hash of the current commit, a.k.a. commit ID, in short format |
-| • **describe**: `string` | the most recent tag of the repo, evaluates to `git describe --always` |
-| • **describeLight**: `string` | the most recent tag of the repo, evaluates to `git describe --always --tags` |
-| • **email**: `string` | current Git user's email as configured by `git config user.email ...` |
-| • **isDirty**: `boolean` | true if the workspace is currently dirty |
-| • **message**: `string` | full git commit message |
-| • **messageBody**: `string` | body of the commit message, as `git log -1 --pretty=%b` |
-| • **messageSubject**: `string` | suject of the commit message, as `git log -1 --pretty=%s` |
-| • **repository**: `string` | name of the git repository |
-| • **tag**: `string` | First tag on the current commit, or sha1/ID of the commit if there's no tag |
-| • **tags**: `string`[] | tags on the current commit, or sha1/ID of the commit if there's no tag |
-| • **user**: `string` | current Git user's name as configured by `git config user.name ...`<br><br><br><a name="interfacesdev_utilsloadconfigurationoptionsmd"></a><br><br>### Interface: LoadConfigurationOptions<T\><br><br>[dev-utils](#readmemd).LoadConfigurationOptions<br><br>Options for loadConfiguration(...) function |
+| **branch**: `string` | name of the current branch |
+| **commitIdLong**: `string` | hash of the current commit, a.k.a. commit ID, in full |
+| **commitIdShort**: `string` | hash of the current commit, a.k.a. commit ID, in short format |
+| **describe**: `string` | the most recent tag of the repo, evaluates to `git describe --always` |
+| **describeLight**: `string` | the most recent tag of the repo, evaluates to `git describe --always --tags` |
+| **email**: `string` | current Git user's email as configured by `git config user.email ...` |
+| **isDirty**: `boolean` | true if the workspace is currently dirty |
+| **message**: `string` | full git commit message |
+| **messageBody**: `string` | body of the commit message, as `git log -1 --pretty=%b` |
+| **messageSubject**: `string` | suject of the commit message, as `git log -1 --pretty=%s` |
+| **repository**: `string` | name of the git repository |
+| **tag**: `string` | First tag on the current commit, or sha1/ID of the commit if there's no tag |
+| **tags**: `string`[] | tags on the current commit, or sha1/ID of the commit if there's no tag |
+| **user**: `string` | current Git user's name as configured by `git config user.name ...` |
 
+
+
+<a name="interfacesdev_utilsloadconfigurationoptionsmd"></a>
+
+### Interface: LoadConfigurationOptions<T\>
+
+[dev-utils](#readmemd).LoadConfigurationOptions
+
+Options for loadConfiguration(...) function
 
 #### Type parameters
 
@@ -370,50 +379,10 @@ Git related information. See https://github.com/jacob-meacham/serverless-plugin-
 
 | Property | Description |
 | --- | --- |
-| • **dir**: `string` | In which directory configuration file(s) should be picked up |
-| • **encoding**: `BufferEncoding` | Encoding of the configuration files |
-| • **extensions**: `Record`<`string`, ``"json"`` \| ``"yaml"``\> | File extensions that should be picked up. It is an object. For each property, the key is the file extension, the value is the file/parser type. |
+| **dir**: `string` | In which directory configuration file(s) should be picked up |
+| **encoding**: `BufferEncoding` | Encoding of the configuration files |
+| **extensions**: `Record`<`string`, ``"json"`` \| ``"yaml"``\> | File extensions that should be picked up. It is an object. For each property, the key is the file extension, the value is the file/parser type. |
+| **merge**: (`childConfig`: `T`, `parentConfig`: `T`) => `T` | Function for merging the configurations from different files.<br>It is supposed to merge all arguments from left to right (the one on the right overrides the one on the left). |
+| **shouldCheckAncestorDir**: (`level`: `number`, `dirName`: `string`, `dirAbsolutePath`: `string`, `consolidatedConfiguration`: `undefined` \| `Partial`<`T`\>, `previousDirAbsolutePath`: `string`) => `boolean` | Predicate function for deciding whether configuration files in the ancestor directory should be picked up |
 
-
-#### Methods
-
-##### merge
-
-▸ **merge**(`childConfig`, `parentConfig`): `T`
-
-Function for merging the configurations from different files.
-It is supposed to merge all arguments from left to right (the one on the right overrides the one on the left).
-
-###### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `childConfig` | `T` |
-| `parentConfig` | `T` |
-
-###### Returns
-
-`T`
-
-___
-
-##### shouldCheckAncestorDir
-
-▸ **shouldCheckAncestorDir**(`level`, `dirName`, `dirAbsolutePath`, `consolidatedConfiguration`, `previousDirAbsolutePath`): `boolean`
-
-Predicate function for deciding whether configuration files in the ancestor directory should be picked up
-
-###### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `level` | `number` |
-| `dirName` | `string` |
-| `dirAbsolutePath` | `string` |
-| `consolidatedConfiguration` | `undefined` \| `Partial`<`T`\> |
-| `previousDirAbsolutePath` | `string` |
-
-###### Returns
-
-`boolean`
 <!-- API end -->

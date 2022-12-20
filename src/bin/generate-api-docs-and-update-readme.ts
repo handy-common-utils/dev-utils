@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 
+/**
+ * @ignore
+ * @module
+ */
+
 import { DevUtils } from '../dev-utils';
 
 const i = process.argv.findIndex(v => v.match(/\.md$/i));
