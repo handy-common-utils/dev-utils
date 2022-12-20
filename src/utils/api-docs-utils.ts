@@ -12,7 +12,7 @@ export function convertRenderedPropertiesToTables(content: string): string {
   result = replaceAll(result, /\n##### Properties\n[\0-\uFFFF]*?(?=(\n##)|$)/g, '');  // [\0-\uFFFF] is a workaround for unsupported "s" flag in ES2017
 
   // transform the section of property details
-  const sectionMatcher = /\n#{4} Properties\n([\0-\uFFFF]*?)(?=(\n#{4} )|$)/g;  // [\0-\uFFFF] is a workaround for unsupported "s" flag in ES2017
+  const sectionMatcher = /\n#{4} Properties\n([\0-\uFFFF]*?)(?=(\n#{4} )|\n{2}<a name=.+<\/a>\n{2}#{3}|$)/g;  // [\0-\uFFFF] is a workaround for unsupported "s" flag in ES2017
   result = replaceAll(result, sectionMatcher, (p2: string) => {
     const blocks = p2.split('___')  // one block for each property
       .map(s => {
