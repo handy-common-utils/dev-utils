@@ -19,14 +19,17 @@ export function convertRenderedPropertiesToTables(content: string): string {
         const lines = s.replace(/^[\0-\uFFFF]*?#{5} .+?\n+/g, '')  // remove headline(s)
           .trim().split('\n');
         // console.log(lines);
-        const headline = lines[0];
+        let headline = lines[0];
         let others = lines.slice(1).join('<br>');
         // trim
         others = others.replace(/^(<br>)+/, '').replace(/(<br>)+$/, '');
         // special formats
-        others = others.replace(/####+ Type declaration<br>/, '**Type declaration:**')
-                       .replace(/####+ Returns<br>/, '**Returns:**');
+        others = others.replace(/###### Type declaration.+▸.+?<br><br>/, '')
+                       .replace(/####### Parameters.*/, '')
+                       .replace(/####### Returns.*/, '')
+                       .replace(/(<br>)+$/, '');
         // remove bullet styles
+        headline = headline.replace(/^(• |▪ )/, '');
         others = replaceAll(others, /(^|<br>)#{5,} /g, '');
         return {
           headline,

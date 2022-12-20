@@ -56,13 +56,13 @@ Constructor
 
 | Property | Description |
 | --- | --- |
-| • **debug**: `DEBUG_FUNC` |  |
-| • **error**: `ERROR_FUNC` |  |
-| • **info**: `INFO_FUNC` |  |
-| • **isDebug**: `boolean` = `false` |  |
-| • **isQuiet**: `boolean` = `false` |  |
-| • **warn**: `WARN_FUNC` |  |
-| ▪ `Static` `Protected` **NO\_OP\_FUNC**: () => `void` | **Type declaration:**<br>▸ (): `void`<br><br>**Returns:**<br>`void` |
+| **debug**: `DEBUG_FUNC` |  |
+| **error**: `ERROR_FUNC` |  |
+| **info**: `INFO_FUNC` |  |
+| **isDebug**: `boolean` = `false` |  |
+| **isQuiet**: `boolean` = `false` |  |
+| **warn**: `WARN_FUNC` |  |
+| `Static` `Protected` **NO\_OP\_FUNC**: () => `void` |  |
 
 
 #### Methods
