@@ -1,5 +1,8 @@
+/* eslint-disable unicorn/prefer-module */
+/* eslint-disable unicorn/text-encoding-identifier-case */
 import { expect } from 'chai';
 import * as fs from 'fs-extra';
+// eslint-disable-next-line unicorn/import-style, unicorn/prefer-node-protocol
 import * as path from 'path';
 import { convertRenderedPropertiesToTables } from '../../src/utils/api-docs-utils';
 

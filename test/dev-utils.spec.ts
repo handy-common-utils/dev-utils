@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { DevUtils, GitInfoKey } from '../src/dev-utils';
 import * as fs from 'fs-extra';
+// eslint-disable-next-line unicorn/import-style, unicorn/prefer-node-protocol
 import * as path from 'path';
 import { FsUtils } from '@handy-common-utils/fs-utils';
 
@@ -16,7 +17,7 @@ describe('DevUtils', () => {
       fs.mkdirSync(TMP_DIR);
       const readmePath = path.join(TMP_DIR, 'README.md');
       fs.copyFileSync('README.md', readmePath);
-      await FsUtils.replaceInFile(readmePath, /<!-- API start -->([\s\S]*)<!-- API end -->/m, PATTERN_STRING);
+      await FsUtils.replaceInFile(readmePath, /<!-- API start -->([\S\s]*)<!-- API end -->/m, PATTERN_STRING);
       expect(fs.readFileSync(readmePath, 'utf8')).to.include(PATTERN_STRING);
 
       await DevUtils.generateApiDocsAndUpdateReadme(readmePath);
@@ -73,6 +74,7 @@ describe('DevUtils', () => {
     it('should environment variables GIT_COMMIT and GITHUB_SHA be effective', async () => {
       const whitelist: GitInfoKey[] = ['commitIdShort', 'commitIdLong'];
       const fakeCommitIdLong = 'this_is_a_fake_commit_id_which_is_quite_long';
+      // eslint-disable-next-line unicorn/prefer-string-slice
       const fakeCommitIdShort = fakeCommitIdLong.substring(0, 7);
 
       let info = await DevUtils.getGitInfo(whitelist);

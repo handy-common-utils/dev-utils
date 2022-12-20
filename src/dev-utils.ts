@@ -1,3 +1,7 @@
+/* eslint-disable unicorn/consistent-destructuring */
+/* eslint-disable unicorn/prefer-string-slice */
+/* eslint-disable unicorn/switch-case-braces */
+/* eslint-disable default-param-last */
 /**
  * ## Re-exports
  *
@@ -15,11 +19,13 @@
 import { Application, TypeDocReader, TSConfigReader, TypeDocOptions } from 'typedoc';
 import concatMd from 'concat-md';
 import * as fs from 'fs-extra';
+// eslint-disable-next-line unicorn/import-style, unicorn/prefer-node-protocol
 import * as path from 'path';
 import YAML from 'yaml';
 import mergeDeep from 'lodash/merge';
 import { FsUtils } from '@handy-common-utils/fs-utils';
 import { convertRenderedPropertiesToTables } from './utils/api-docs-utils';
+// eslint-disable-next-line unicorn/prefer-module
 const ServerlessGitVariables = require('serverless-plugin-git-variables');
 
 const API_DOCS_DIR = 'api-docs';
@@ -189,11 +195,11 @@ export abstract class DevUtils {
     .then(content => convertRenderedPropertiesToTables(content))
     .then(content => `<!-- API start -->${content}<!-- API end -->`)
     .then(content => FsUtils.escapeRegExpReplacement(content));
-    await FsUtils.replaceInFile(readmeLocation, /<!-- API start -->([\s\S]*)<!-- API end -->/m, () => apiDocsContentPromise);
+    await FsUtils.replaceInFile(readmeLocation, /<!-- API start -->([\S\s]*)<!-- API end -->/m, () => apiDocsContentPromise);
     if (elevatedModuleMdFileName) {
       await FsUtils.replaceInFile(readmeLocation, new RegExp(`]\\(\\.\\./modules/${elevatedModuleMdFileName}\\)`, 'g'), '](#readmemd)');
     }
-    await FsUtils.addSurroundingInFile(readmeLocation, /\*\*`example`\*\*([\s\S]*?)###/gm, '**`example`**\n```javascript\n', '```\n###');
+    await FsUtils.addSurroundingInFile(readmeLocation, /\*\*`example`\*\*([\S\s]*?)###/gm, '**`example`**\n```javascript\n', '```\n###');
   }
 
   /**
