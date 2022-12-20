@@ -50,9 +50,6 @@
     "typedoc-plugin-markdown": "^3.14.0",
     "yaml": "^2.1.3"
   },
-  "bundledDependencies": [
-    "serverless-plugin-git-variables"
-  ],
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@types/chai": "^4.3.1",
