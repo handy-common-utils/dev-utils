@@ -118,7 +118,7 @@ const config = DevUtils.loadConfiguration(
 
 # How to contribute
 
-Please note that for avoidding peer dependency `serverless` to be included,
+Please note that for avoiding peer dependency `serverless` to be included,
 bundled dependency `serverless-plugin-git-variables` was installed with additional option:
 
 ```sh
