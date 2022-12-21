@@ -10,7 +10,7 @@
   "scripts": {
     "pretest": "eslint . --ext .ts",
     "test": "nyc mocha",
-    "fixPeerDependencies": "shx sed -i 's/^ +\"serverless\": *\".+\",*$//' node_modules/serverless-plugin-git-variables/package.json; shx sed -i 's/^ +\"serverless\": *\".+\",*$//' package-lock.json",
+    "fixPeerDependencies": "replace-in-files '\"serverless\": *\".+?\",*' '' node_modules/serverless-plugin-git-variables/package.json package-lock.json",
     "prepare": "shx rm -rf dist && npm run fixPeerDependencies && tsc && shx chmod +x dist/bin/*.js && es-check",
     "preversion": "npm run prepare && dist/bin/generate-api-docs-and-update-readme.js && git add README.md"
   },
