@@ -41,7 +41,7 @@
   },
   "homepage": "https://github.com/handy-common-utils/dev-utils#readme",
   "dependencies": {
-    "@handy-common-utils/fs-utils": "^1.0.17",
+    "@handy-common-utils/fs-utils": "^1.0.20",
     "concat-md": "^0.5.0",
     "lodash": "^4.17.21",
     "serverless-plugin-git-variables": "^5.2.0",
