@@ -1,0 +1,15 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
+jobs:
+  publish:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: handy-common-utils/automation/github/actions/publish-npm@main
+        with:
+          npm-publish-token: ${{ secrets.NPM_PUBLISH_TOKEN }}
