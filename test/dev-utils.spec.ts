@@ -135,6 +135,27 @@ describe('DevUtils', () => {
   });
 
   describe('loadConfiguration(...)', () => {
+    it('has the default merger merges object on the right to object on the left', () => {
+      const left = {
+        prop1: 1,
+        prop2: 2,
+        array1: ['a', 'b', 'c'],
+        array2: ['a', 'b', 'c'],
+      };
+      const right = {
+        prop2: 200,
+        prop3: 300,
+        array1: ['d', 'e', 'f', 'g'],
+        array2: ['d', undefined],
+      };
+      expect(DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION.merge(left, right)).to.deep.equal({
+        prop1: 1,
+        prop2: 200,
+        prop3: 300,
+        array1: ['d', 'e', 'f', 'g'],
+        array2: ['d', 'b', 'c'],
+      });
+    });
     it('handles JSON', () => {
       const r = DevUtils.loadConfiguration('package');
       expect(r).to.be.an('object');

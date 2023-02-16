@@ -122,9 +122,10 @@ export interface LoadConfigurationOptions<T = any> {
   encoding: BufferEncoding;
   /**
    * Function for merging the configurations from different files.
-   * It is supposed to merge all arguments from left to right (the one on the right overrides the one on the left).
+   * It is supposed to merge the object on the right to the object on the left.
+   * The function is also supposed to return the modified object on the left.
    */
-  merge: (childConfig: T, parentConfig: T) => T;
+  merge: (base: T, override: T) => T;
 }
 
 export abstract class DevUtils {
@@ -295,7 +296,7 @@ export abstract class DevUtils {
       '.json': 'json',
     },
     encoding: 'utf8',
-    merge: (childConfig: any, parentConfig: any) => mergeDeep(childConfig, parentConfig),
+    merge: (base: any, override: any) => mergeDeep(base, override),
   };
 
   /**
