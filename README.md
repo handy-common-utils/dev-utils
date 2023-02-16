@@ -15,7 +15,7 @@ Tool chain utilities for the convenience of developers.
 
 ## How to use - generating API doc and update README.md
 
-Normally you don't use this package directly (althought it is perfectly fine to use this package alone).
+Normally you don't use this package directly (although it is perfectly fine to use this package alone).
 Instead, you add `@handy-common-utils/dev-dependencies`as a dev dependency (which in turn depends on this package):
 
 ```sh
@@ -30,7 +30,7 @@ You can use optional command line arguments to customise the behaviour of `gener
 
 1. Path of the readme.md file. The path must ends with ".md" (case insensitive). The file would be modified. Default: `README.md`.
 2. Entry points for generating API documentation. Multiple entry points can be specified by joining them with comma (`,`). Default: `./src`.
-3. path of the directory for storing generated intemediate documentation files. This directory would not be cleaned up. Default: `api-docs`.
+3. path of the directory for storing generated intermediate documentation files. This directory would not be cleaned up. Default: `api-docs`.
 
 These arguments must be specified in the order as shown above.
 
@@ -40,7 +40,7 @@ These arguments must be specified in the order as shown above.
 such as repository, branch, commit id, tags, etc.
 It relies on the Git command line tool ('git') to have already been installed.
 
-The function accepts two optinoal arugments. The first one allows you to specify which properties/info to return.
+The function accepts two optional arguments. The first one allows you to specify which properties/info to return.
 The second one allows you to control whether environment variables should be checked.
 By default all properties/info would be returned and environment variables would be checked before falling back to checking local Git repository.
 
@@ -70,11 +70,14 @@ Details of the properties in this structure can be found in [the documentation o
 
 The functionality depends on [serverless-plugin-git-variables](https://github.com/jacob-meacham/serverless-plugin-git-variables). Check it out if you are interested.
 
-## How to use - loadConfiguration(...)
+## How to use - loadConfiguration(...) and loadConfigurationWithVariant(...)
 
-This function (`loadConfiguration(...)` or `DevUtils.loadConfiguration(...)`) would be handy if you need to read configuration from YAML and/or JSON files.
+The function `loadConfiguration(...)` / `DevUtils.loadConfiguration(...)` would be handy if you need to read configuration from YAML and/or JSON files.
 
-It has these features:
+If you have multiple variants of the configurations, such like `settings.default.yml`, `settings.staging.yml`, `settings.production.yml`,
+you can use `loadConfigurationWithVariant(...)` or `DevUtils.loadConfigurationWithVariant(...)` instead.
+
+`loadConfiguration(...)` / `DevUtils.loadConfiguration(...)` has these features:
 
 - Find and parse files in the same directory with different extensions. By default it picks up and parses `.yaml`, `.yml` and `.json` files,
   but you can customise file extensions and the order they override each other. You can also customise it to pick up different versions of
@@ -87,11 +90,22 @@ It has these features:
 - If the configuration file has a format/syntax error and can't be parsed, an Error would be thrown.
 - If there's no configuration file picked up, it would return `undefined`.
 
+`loadConfigurationWithVariant(...)` / `DevUtils.loadConfigurationWithVariant(...)` has these additional features:
+
+- Allows a base variant and an interested variant to be specified
+- Overrides the base variant configuration with the interested variant configuration
+
 Code examples:
 
 ```typescript
 // Pick up and merge (those to the left overrides those to the right) configurations from: ./my-config.yaml, ./my-config.yml, ./my-config.json
 const config = DevUtils.loadConfiguration('my-config');
+
+// Pick up and merge ./my-config.default.{yaml,yml,json} with ./my-config.prod.{yaml,yml,json}
+const config = DevUtils.loadConfigurationWithVariant('my-config', '.prod');
+
+// Pick up and merge ./my-config-production.{yaml,yml,json} with ./my-config.{yaml,yml,json}
+const config = DevUtils.loadConfigurationWithVariant('my-config', '-production', '');
 
 // Let .json override .yml and don't try to pick up .yaml
 const config = DevUtils.loadConfiguration('my-config', { extensions: {

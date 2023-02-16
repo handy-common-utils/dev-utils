@@ -156,6 +156,21 @@ describe('DevUtils', () => {
         array2: ['d', 'b', 'c'],
       });
     });
+    it('has the default merger that can handle null/undefined', () => {
+      const obj = {
+        prop1: 1,
+        prop2: 2,
+        array1: ['a', 'b', 'c'],
+        array2: ['a', 'b', 'c'],
+      };
+      expect(DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION.merge(undefined, obj)).to.deep.equal(obj);
+      expect(DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION.merge(null, obj)).to.deep.equal(obj);
+      // eslint-disable-next-line unicorn/no-useless-undefined
+      expect(DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION.merge(obj, undefined)).to.deep.equal(obj);
+      expect(DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION.merge(obj, null)).to.deep.equal(obj);
+      expect(DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION.merge(undefined, null)).to.be.empty;
+      expect(DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION.merge(null, null)).to.be.empty;
+    });
     it('handles JSON', () => {
       const r = DevUtils.loadConfiguration('package');
       expect(r).to.be.an('object');
@@ -259,6 +274,38 @@ describe('DevUtils', () => {
     });
     it('throws error if specified parser does not exist', () => {
       expect(() => DevUtils.loadConfiguration('wrong', { dir: 'test/fixtures', extensions: { '.json': 'abc' as any } })).to.throw(/No parser.+\.json/);
+    });
+  });
+
+  describe('loadConfigurationWithVariant(...)', () => {
+    it('returns undefined if no configuration file can be found', () => {
+      const r = DevUtils.loadConfigurationWithVariant('non-existing-config', '.prod', '.default', { dir: 'test/fixtures/dir_L1/dir_L2/dir_L3/dir_L4' });
+      expect(r).to.be.undefined;
+    });
+    it('can search up ancestor directories', () => {
+      const r = DevUtils.loadConfigurationWithVariant(
+        'config',
+        '.prod',
+        '',
+        {
+          dir: 'test/fixtures/dir_L1/dir_L2/dir_L3/dir_L4',
+          shouldCheckAncestorDir: level => {
+            return level <= 3;
+          },
+        },
+      );
+      expect(r).to.be.an('object');
+      expect(r).to.deep.equal({
+        dirName: 'L4',
+        env: 'prod',
+        fileName: 'config.prod.yml',
+        'l4_config.json': true,
+        'l4_config.yml': true,
+        'l3_config.yml': true,
+        'l2_config.yml': true,
+        'l2_config.json': true,
+        'l1_config.yaml': true,
+      });
     });
   });
 });

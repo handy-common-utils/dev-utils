@@ -11,6 +11,7 @@
  * - [generateApiDocsAndUpdateReadme = DevUtils.generateApiDocsAndUpdateReadme](../classes/dev_utils.DevUtils.md#generateapidocsandupdatereadme)
  * - [getGitInfo = DevUtils.getGitInfo](../classes/dev_utils.DevUtils.md#getGitInfo)
  * - [loadConfiguration = DevUtils.loadConfiguration](../classes/dev_utils.DevUtils.md#loadConfiguration)
+ * - [loadConfigurationWithVariant = DevUtils.loadConfigurationWithVariant](../classes/dev_utils.DevUtils.md#loadConfigurationWithVariant)
  *
  * ## Exports
  *
@@ -125,7 +126,7 @@ export interface LoadConfigurationOptions<T = any> {
    * It is supposed to merge the object on the right to the object on the left.
    * The function is also supposed to return the modified object on the left.
    */
-  merge: (base: T, override: T) => T;
+  merge: (base: T|undefined, override: T|undefined) => T;
 }
 
 export abstract class DevUtils {
@@ -301,7 +302,7 @@ export abstract class DevUtils {
 
   /**
    * Load configuration from YAML and/or JSON files.
-   * This function is capable of reading multiple configuration files from the same directory and/or a series of directories, and combine the configurations.
+   * This function is capable of reading multiple configuration files from the same directory and optionally its ancestor directories, and combine the configurations.
    *
    * Internal logic of this function is: \
    * 1. Start from the directory as specified by options.dir (default is ".") \
@@ -388,6 +389,30 @@ export abstract class DevUtils {
 
     return consolidatedConfiguration;
   }
+
+  /**
+   * Load configuration from YAML and/or JSON files with variant suffix.
+   * This function is capable of reading multiple configuration files from the same directory and optionally its ancestor directories, and combine the configurations.
+   * This function is based on {@link loadConfiguration}.
+   * It picks up the specified variant configuration and the base variant configuration from a directory and optionally its ancestor directories,
+   * then merge them by overriding the base variant configuration with the specified variant configuration.
+   *
+   * @param fileNameBase Base part of the file name, for example, `my-config`, `settings`.
+   * @param variant Part of the file name that identifies the variant, for example, `.staging`, `-production`, `_test`.
+   * When searching for configuration files, it would be inserted between the fileNameBase and the file type suffix.
+   * @param baseVariant Part of the file name that identifies the base variant. The default value is `.default`.
+   * When searching for configuration files, it would be inserted between the fileNameBase and the file type suffix.
+   * @param overrideOptions Options that would be combined with default options.
+   * @returns The combined configuration, or undefined if no configuration file can be found/read.
+   */
+  static loadConfigurationWithVariant<T = any>(fileNameBase: string, variant: string, baseVariant = '.default', overrideOptions?: Partial<LoadConfigurationOptions<T>>): T | undefined {
+    const baseConfiguration = DevUtils.loadConfiguration<T>(`${fileNameBase}${baseVariant}`, overrideOptions);
+    const variantConfiguration = DevUtils.loadConfiguration<T>(`${fileNameBase}${variant}`, overrideOptions);
+    if (baseConfiguration == null && variantConfiguration == null) {
+      return undefined;
+    }
+    return (overrideOptions?.merge ?? DevUtils.DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION.merge)(baseConfiguration, variantConfiguration);
+  }
 }
 
 /** @ignore */
@@ -398,3 +423,5 @@ export const generateApiDocsAndUpdateReadme = DevUtils.generateApiDocsAndUpdateR
 export const getGitInfo = DevUtils.getGitInfo;
 /** @ignore */
 export const loadConfiguration = DevUtils.loadConfiguration;
+/** @ignore */
+export const loadConfigurationWithVariant = DevUtils.loadConfigurationWithVariant;
