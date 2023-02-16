@@ -154,6 +154,7 @@ npm i serverless-plugin-git-variables --legacy-peer-deps
 - [generateApiDocsAndUpdateReadme = DevUtils.generateApiDocsAndUpdateReadme](#generateapidocsandupdatereadme)
 - [getGitInfo = DevUtils.getGitInfo](#getGitInfo)
 - [loadConfiguration = DevUtils.loadConfiguration](#loadConfiguration)
+- [loadConfigurationWithVariant = DevUtils.loadConfigurationWithVariant](#loadConfigurationWithVariant)
 
 ### Exports
 
@@ -281,7 +282,7 @@ ___
 ▸ `Static` **loadConfiguration**<`T`\>(`fileNameBase`, `overrideOptions?`): `undefined` \| `T`
 
 Load configuration from YAML and/or JSON files.
-This function is capable of reading multiple configuration files from the same directory and/or a series of directories, and combine the configurations.
+This function is capable of reading multiple configuration files from the same directory and optionally its ancestor directories, and combine the configurations.
 
 Internal logic of this function is: \
 1. Start from the directory as specified by options.dir (default is ".") \
@@ -343,6 +344,39 @@ const config = DevUtils.loadConfiguration(
 
 The combined configuration, or undefined if no configuration file can be found/read.
 
+___
+
+##### loadConfigurationWithVariant
+
+▸ `Static` **loadConfigurationWithVariant**<`T`\>(`fileNameBase`, `variant`, `baseVariant?`, `overrideOptions?`): `undefined` \| `T`
+
+Load configuration from YAML and/or JSON files with variant suffix.
+This function is capable of reading multiple configuration files from the same directory and optionally its ancestor directories, and combine the configurations.
+This function is based on [loadConfiguration](#loadconfiguration).
+It picks up the specified variant configuration and the base variant configuration from a directory and optionally its ancestor directories,
+then merge them by overriding the base variant configuration with the specified variant configuration.
+
+###### Type parameters
+
+| Name | Type |
+| :------ | :------ |
+| `T` | `any` |
+
+###### Parameters
+
+| Name | Type | Default value | Description |
+| :------ | :------ | :------ | :------ |
+| `fileNameBase` | `string` | `undefined` | Base part of the file name, for example, `my-config`, `settings`. |
+| `variant` | `string` | `undefined` | Part of the file name that identifies the variant, for example, `.staging`, `-production`, `_test`. When searching for configuration files, it would be inserted between the fileNameBase and the file type suffix. |
+| `baseVariant` | `string` | `'.default'` | Part of the file name that identifies the base variant. The default value is `.default`. When searching for configuration files, it would be inserted between the fileNameBase and the file type suffix. |
+| `overrideOptions?` | `Partial`<[`LoadConfigurationOptions`](#interfacesdev_utilsloadconfigurationoptionsmd)<`T`\>\> | `undefined` | Options that would be combined with default options. |
+
+###### Returns
+
+`undefined` \| `T`
+
+The combined configuration, or undefined if no configuration file can be found/read.
+
 ## Interfaces
 
 
@@ -396,7 +430,7 @@ Options for loadConfiguration(...) function
 | **dir**: `string` | In which directory configuration file(s) should be picked up |
 | **encoding**: `BufferEncoding` | Encoding of the configuration files |
 | **extensions**: `Record`<`string`, ``"json"`` \| ``"yaml"``\> | File extensions that should be picked up. It is an object. For each property, the key is the file extension, the value is the file/parser type. |
-| **merge**: (`childConfig`: `T`, `parentConfig`: `T`) => `T` | Function for merging the configurations from different files.<br>It is supposed to merge all arguments from left to right (the one on the right overrides the one on the left). |
+| **merge**: (`base`: `undefined` \| `T`, `override`: `undefined` \| `T`) => `T` | Function for merging the configurations from different files.<br>It is supposed to merge the object on the right to the object on the left.<br>The function is also supposed to return the modified object on the left. |
 | **shouldCheckAncestorDir**: (`level`: `number`, `dirName`: `string`, `dirAbsolutePath`: `string`, `consolidatedConfiguration`: `undefined` \| `Partial`<`T`\>, `previousDirAbsolutePath`: `string`) => `boolean` | Predicate function for deciding whether configuration files in the ancestor directory should be picked up |
 
 <!-- API end -->
