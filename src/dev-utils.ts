@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prefer-node-protocol */
 /* eslint-disable unicorn/consistent-destructuring */
 /* eslint-disable unicorn/prefer-string-slice */
 /* eslint-disable unicorn/switch-case-braces */
@@ -19,8 +20,8 @@
  */
 import { Application, TypeDocReader, TSConfigReader, TypeDocOptions } from 'typedoc';
 import concatMd from 'concat-md';
-import * as fs from 'fs-extra';
-// eslint-disable-next-line unicorn/import-style, unicorn/prefer-node-protocol
+import * as fs from 'fs';
+// eslint-disable-next-line unicorn/import-style
 import * as path from 'path';
 import YAML from 'yaml';
 import mergeDeep from 'lodash/merge';
@@ -180,7 +181,8 @@ export abstract class DevUtils {
         elevatedModuleMdFileName = moduleMdFiles[0];
         const moduleMdFile = path.join(moduleMdFileDir, elevatedModuleMdFileName);
         const readmeMdFile = path.join(apiDocDir, 'README.md');
-        fs.moveSync(moduleMdFile, readmeMdFile, { overwrite: true });
+        fs.rmSync(readmeMdFile);
+        fs.renameSync(moduleMdFile, readmeMdFile);
         // fix links
         await FsUtils.replaceInFile(readmeMdFile, /]\(\.\.\//g, '](');
         await FsUtils.replaceInFile(readmeMdFile, new RegExp(`]\\(${elevatedModuleMdFileName}#`, 'g'), '](#');
