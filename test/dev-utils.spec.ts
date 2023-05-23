@@ -1,7 +1,8 @@
+/* eslint-disable unicorn/prefer-node-protocol */
 import { expect } from 'chai';
 import { DevUtils, GitInfoKey } from '../src/dev-utils';
-import * as fs from 'fs-extra';
-// eslint-disable-next-line unicorn/import-style, unicorn/prefer-node-protocol
+import * as fs from 'fs';
+// eslint-disable-next-line unicorn/import-style
 import * as path from 'path';
 import { FsUtils } from '@handy-common-utils/fs-utils';
 
@@ -13,9 +14,10 @@ describe('DevUtils', () => {
 
       const PATTERN_STRING = '<!-- API start -->\nDUMMY\n<!-- API end -->';
 
-      fs.removeSync(TMP_DIR);
+      fs.rmSync(TMP_DIR);
       fs.mkdirSync(TMP_DIR);
       const readmePath = path.join(TMP_DIR, 'README.md');
+      // eslint-disable-next-line node/no-unsupported-features/node-builtins
       fs.copyFileSync('README.md', readmePath);
       await FsUtils.replaceInFile(readmePath, /<!-- API start -->([\S\s]*)<!-- API end -->/m, PATTERN_STRING);
       expect(fs.readFileSync(readmePath, 'utf8')).to.include(PATTERN_STRING);
