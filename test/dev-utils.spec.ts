@@ -14,7 +14,9 @@ describe('DevUtils', () => {
 
       const PATTERN_STRING = '<!-- API start -->\nDUMMY\n<!-- API end -->';
 
-      fs.rmSync(TMP_DIR);
+      if (fs.existsSync(TMP_DIR)) {
+        fs.rmSync(TMP_DIR);
+      }
       fs.mkdirSync(TMP_DIR);
       const readmePath = path.join(TMP_DIR, 'README.md');
       // eslint-disable-next-line node/no-unsupported-features/node-builtins
