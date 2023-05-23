@@ -86,7 +86,7 @@ export interface GitInfo {
    */
   message: string;
   /**
-   * suject of the commit message, as `git log -1 --pretty=%s`
+   * subject of the commit message, as `git log -1 --pretty=%s`
    */
   messageSubject: string;
   /**
@@ -97,7 +97,7 @@ export interface GitInfo {
 
 export type GitInfoKey = keyof GitInfo;
 
-const configurtionParsers = {
+const configurationParsers = {
   yaml: (text: string) => YAML.parse(text),
   json: (text: string) => JSON.parse(text),
 };
@@ -117,7 +117,7 @@ export interface LoadConfigurationOptions<T = any> {
   /**
    * File extensions that should be picked up. It is an object. For each property, the key is the file extension, the value is the file/parser type.
    */
-  extensions: Record<string, keyof typeof configurtionParsers>;
+  extensions: Record<string, keyof typeof configurationParsers>;
   /**
    * Encoding of the configuration files
    */
@@ -161,7 +161,7 @@ export abstract class DevUtils {
    * Generate API documentation and insert it into README.md file.
    * @param readmeLocation location of the README.md file
    * @param entryPoints Entry points for generating API documentation
-   * @param apiDocDir temporary directory for storing intemediate documenation files
+   * @param apiDocDir temporary directory for storing intermediate documentation files
    * @param typeDocOptions Options for TypeDoc
    * @returns Promise of void
    * @example
@@ -209,7 +209,7 @@ export abstract class DevUtils {
   /**
    * Get Git related information. This function relies on the existence of Git command line.
    *
-   * By default all possible information will be returned, but this can be overriden by
+   * By default all possible information will be returned, but this can be overridden by
    * specifying `whitelistKeys` argument.
    *
    * If `checkEnvironmentVariables` argument is `true`, then environment variables `GIT_COMMIT` and `GITHUB_SHA`
@@ -318,8 +318,8 @@ export abstract class DevUtils {
    *    3.2 If parent directory should be checked, use parent directory and go to step 2 \
    *    3.3 Otherwise finish up \
    *    3.4 Default configuration of `options.shouldCheckAncestorDir` always returns false. You can override it. \
-   *        3.4.1 Several parameters are passed to the function: level (the immedicate parent directory has the leve value 1), basename of the directory, absolute path of the directory, already consolidated/merged configurations, absolute path of the directory containing the last/previous file picked up. \
-   * 4. Configurtions in child directories override configurations in parent directories. \
+   *        3.4.1 Several parameters are passed to the function: level (the immediate parent directory has the level value 1), basename of the directory, absolute path of the directory, already consolidated/merged configurations, absolute path of the directory containing the last/previous file picked up. \
+   * 4. Configurations in child directories override configurations in parent directories. \
    *
    * Other options: \
    * `encoding`: encoding used when reading the file, default is 'utf8' \
@@ -367,7 +367,7 @@ export abstract class DevUtils {
           // ignore
           continue;
         }
-        const parse = configurtionParsers[fileType];
+        const parse = configurationParsers[fileType];
         if (!parse) {
           throw new Error(`No parser for file extension "${extension}" as type "${fileType}", is it caused by a typo in options.extensions?`);
         }
