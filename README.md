@@ -215,7 +215,7 @@ DevUtils.generateApiDocsAndUpdateReadme(readmePath, entryPoints, apiDocDir);
 | :------ | :------ | :------ | :------ |
 | `readmeLocation` | `string` | `README_MD_FILE` | location of the README.md file |
 | `entryPoints` | `string`[] | `undefined` | Entry points for generating API documentation |
-| `apiDocDir` | `string` | `API_DOCS_DIR` | temporary directory for storing intemediate documenation files |
+| `apiDocDir` | `string` | `API_DOCS_DIR` | temporary directory for storing intermediate documentation files |
 | `typeDocOptions?` | `Partial`<`Omit`<`TypeDocOptions`, ``"out"`` \| ``"entryPoints"``\>\> | `undefined` | Options for TypeDoc |
 
 ###### Returns
@@ -250,7 +250,7 @@ ___
 
 Get Git related information. This function relies on the existence of Git command line.
 
-By default all possible information will be returned, but this can be overriden by
+By default all possible information will be returned, but this can be overridden by
 specifying `whitelistKeys` argument.
 
 If `checkEnvironmentVariables` argument is `true`, then environment variables `GIT_COMMIT` and `GITHUB_SHA`
@@ -296,8 +296,8 @@ Internal logic of this function is: \
    3.2 If parent directory should be checked, use parent directory and go to step 2 \
    3.3 Otherwise finish up \
    3.4 Default configuration of `options.shouldCheckAncestorDir` always returns false. You can override it. \
-       3.4.1 Several parameters are passed to the function: level (the immedicate parent directory has the leve value 1), basename of the directory, absolute path of the directory, already consolidated/merged configurations, absolute path of the directory containing the last/previous file picked up. \
-4. Configurtions in child directories override configurations in parent directories. \
+       3.4.1 Several parameters are passed to the function: level (the immediate parent directory has the level value 1), basename of the directory, absolute path of the directory, already consolidated/merged configurations, absolute path of the directory containing the last/previous file picked up. \
+4. Configurations in child directories override configurations in parent directories. \
 
 Other options: \
 `encoding`: encoding used when reading the file, default is 'utf8' \
@@ -401,7 +401,7 @@ Git related information. See https://github.com/jacob-meacham/serverless-plugin-
 | **isDirty**: `boolean` | true if the workspace is currently dirty |
 | **message**: `string` | full git commit message |
 | **messageBody**: `string` | body of the commit message, as `git log -1 --pretty=%b` |
-| **messageSubject**: `string` | suject of the commit message, as `git log -1 --pretty=%s` |
+| **messageSubject**: `string` | subject of the commit message, as `git log -1 --pretty=%s` |
 | **repository**: `string` | name of the git repository |
 | **tag**: `string` | First tag on the current commit, or sha1/ID of the commit if there's no tag |
 | **tags**: `string`[] | tags on the current commit, or sha1/ID of the commit if there's no tag |
