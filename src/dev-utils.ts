@@ -18,7 +18,8 @@
  *
  * @module
  */
-import { Application, TypeDocReader, TSConfigReader, TypeDocOptions } from 'typedoc';
+// eslint-disable-next-line node/no-missing-import
+import { Application, TypeDocReader, TSConfigReader, TypeDocOptions, PackageJsonReader } from 'typedoc';
 import concatMd from 'concat-md';
 import * as fs from 'fs';
 // eslint-disable-next-line unicorn/import-style
@@ -135,10 +136,11 @@ export abstract class DevUtils {
     const app = new Application();
     // app.options.addReader(new ArgumentsReader(0));
     app.options.addReader(new TypeDocReader());
+    app.options.addReader(new PackageJsonReader());
     app.options.addReader(new TSConfigReader());
-    // tdCli.options.addReader(new ArgumentsReader(300));
+    // app.options.addReader(new ArgumentsReader(300));
 
-    app.bootstrap({
+    app.bootstrapWithPlugins({
       entryPoints,
       out: apiDocDir,
       readme: 'none',
@@ -146,6 +148,8 @@ export abstract class DevUtils {
       excludePrivate: true,
       excludeExternals: true,
       entryPointStrategy: 'expand',
+      plugin: ['typedoc-plugin-markdown'],
+      theme: 'markdown',
       // https://www.npmjs.com/package/typedoc-plugin-markdown
       hideBreadcrumbs: true,
       hideInPageTOC: true,
@@ -182,7 +186,7 @@ export abstract class DevUtils {
         const moduleMdFile = path.join(moduleMdFileDir, elevatedModuleMdFileName);
         const readmeMdFile = path.join(apiDocDir, 'README.md');
         if (fs.existsSync(readmeMdFile)) {
-        fs.rmSync(readmeMdFile);
+          fs.rmSync(readmeMdFile);
         }
         fs.renameSync(moduleMdFile, readmeMdFile);
         // fix links
