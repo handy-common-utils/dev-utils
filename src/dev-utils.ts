@@ -140,7 +140,7 @@ export abstract class DevUtils {
     app.options.addReader(new TSConfigReader());
     // app.options.addReader(new ArgumentsReader(300));
 
-    app.bootstrapWithPlugins({
+    await app.bootstrapWithPlugins({
       entryPoints,
       out: apiDocDir,
       readme: 'none',
