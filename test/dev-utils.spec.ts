@@ -15,7 +15,7 @@ describe('DevUtils', () => {
       const PATTERN_STRING = '<!-- API start -->\nDUMMY\n<!-- API end -->';
 
       if (fs.existsSync(TMP_DIR)) {
-        fs.rmSync(TMP_DIR);
+        fs.rmSync(TMP_DIR, { recursive: true });
       }
       fs.mkdirSync(TMP_DIR);
       const readmePath = path.join(TMP_DIR, 'README.md');

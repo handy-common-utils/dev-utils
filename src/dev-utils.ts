@@ -181,7 +181,9 @@ export abstract class DevUtils {
         elevatedModuleMdFileName = moduleMdFiles[0];
         const moduleMdFile = path.join(moduleMdFileDir, elevatedModuleMdFileName);
         const readmeMdFile = path.join(apiDocDir, 'README.md');
+        if (fs.existsSync(readmeMdFile)) {
         fs.rmSync(readmeMdFile);
+        }
         fs.renameSync(moduleMdFile, readmeMdFile);
         // fix links
         await FsUtils.replaceInFile(readmeMdFile, /]\(\.\.\//g, '](');
