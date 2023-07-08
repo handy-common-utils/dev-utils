@@ -16,6 +16,7 @@ export function convertRenderedPropertiesToTables(content: string): string {
   result = replaceAll(result, sectionMatcher, (p2: string) => {
     const blocks = p2.split('___')  // one block for each property
       .map(s => {
+        // eslint-disable-next-line unicorn/prefer-string-replace-all
         const lines = s.replace(/^[\0-\uFFFF]*?#{5} .+?\n+/g, '')  // remove headline(s)
           .trim().split('\n');
         // console.log(lines);

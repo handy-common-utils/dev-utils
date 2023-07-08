@@ -1,7 +1,19 @@
 extends:
-- oclif
+- plugin:eslint-plugin-unicorn/recommended
 - oclif-typescript
 rules:
+  capitalized-comments: off
+  comma-dangle:
+    - error
+    - always-multiline
+  default-case: off
+  no-multi-spaces: off
+  node/shebang: off
+  curly: off
+  quotes:
+    - error
+    - single
+    - avoidEscape: true
   valid-jsdoc:
   - error
   - requireReturnType: false
@@ -33,16 +45,15 @@ rules:
     SwitchCase: 1
   unicorn/prevent-abbreviations: off
   unicorn/no-array-reduce: off
+  unicorn/no-array-for-each: off
+  unicorn/no-array-for-loop: off
   unicorn/no-static-only-class: off
   unicorn/no-unreadable-array-destructuring: off
   unicorn/empty-brace-spaces: off
   unicorn/numeric-separators-style: off
-  node/shebang:
-  - error
-  - convertPath:
-      src/bin/**/*.ts:
-      - "^src/bin/(.+?)\\.ts$"
-      - dist/bin//$1.js
+  unicorn/no-null: off
+  unicorn/prefer-module: warn
+  unicorn/prefer-string-replace-all: warn
   node/no-extraneous-import: off
   no-await-in-loop: off
   no-useless-constructor: off

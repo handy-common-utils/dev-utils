@@ -201,6 +201,7 @@ export abstract class DevUtils {
       dirNameAsTitle: true,
       startTitleLevelAt: 2,
     })
+    // eslint-disable-next-line unicorn/prefer-string-replace-all
     .then(content => content.replace(/##+ Table of contents\n/g, ''))
     .then(content => convertRenderedPropertiesToTables(content))
     .then(content => `<!-- API start -->${content}<!-- API end -->`)
