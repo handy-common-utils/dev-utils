@@ -1,10 +1,11 @@
 /* eslint-disable unicorn/prefer-node-protocol */
+import { FsUtils } from '@handy-common-utils/fs-utils';
 import { expect } from 'chai';
-import { DevUtils, GitInfoKey } from '../src/dev-utils';
 import * as fs from 'fs';
 // eslint-disable-next-line unicorn/import-style
 import * as path from 'path';
-import { FsUtils } from '@handy-common-utils/fs-utils';
+
+import { DevUtils, GitInfoKey } from '../src/dev-utils';
 
 const TMP_DIR = 'tmp';
 describe('DevUtils', () => {

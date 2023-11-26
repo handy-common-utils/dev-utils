@@ -18,15 +18,16 @@
  *
  * @module
  */
-// eslint-disable-next-line node/no-missing-import
-import { Application, TypeDocReader, TSConfigReader, TypeDocOptions, PackageJsonReader } from 'typedoc';
+import { FsUtils } from '@handy-common-utils/fs-utils';
 import concatMd from 'concat-md';
 import * as fs from 'fs';
+import mergeDeep from 'lodash/merge';
 // eslint-disable-next-line unicorn/import-style
 import * as path from 'path';
+// eslint-disable-next-line node/no-missing-import
+import { Application, PackageJsonReader, TSConfigReader, TypeDocOptions, TypeDocReader } from 'typedoc';
 import YAML from 'yaml';
-import mergeDeep from 'lodash/merge';
-import { FsUtils } from '@handy-common-utils/fs-utils';
+
 import { convertRenderedPropertiesToTables } from './utils/api-docs-utils';
 // eslint-disable-next-line unicorn/prefer-module
 const ServerlessGitVariables = require('serverless-plugin-git-variables');

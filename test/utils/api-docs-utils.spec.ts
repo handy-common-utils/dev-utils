@@ -5,6 +5,7 @@ import { expect } from 'chai';
 import * as fs from 'fs';
 // eslint-disable-next-line unicorn/import-style
 import * as path from 'path';
+
 import { convertRenderedPropertiesToTables } from '../../src/utils/api-docs-utils';
 
 describe('api-docs-utils', () => {
