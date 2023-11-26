@@ -25,7 +25,7 @@ import mergeDeep from 'lodash/merge';
 // eslint-disable-next-line unicorn/import-style
 import * as path from 'path';
 // eslint-disable-next-line node/no-missing-import
-import { Application, PackageJsonReader, TSConfigReader, TypeDocOptions, TypeDocReader } from 'typedoc';
+import { Application, TypeDocOptions } from 'typedoc';
 import YAML from 'yaml';
 
 import { convertRenderedPropertiesToTables } from './utils/api-docs-utils';
@@ -134,14 +134,7 @@ export interface LoadConfigurationOptions<T = any> {
 
 export abstract class DevUtils {
   static async generateApiDocsMd(entryPoints = ['./src'], apiDocDir = API_DOCS_DIR, options?: Partial<Omit<TypeDocOptions, 'out'|'entryPoints'>>): Promise<void> {
-    const app = new Application();
-    // app.options.addReader(new ArgumentsReader(0));
-    app.options.addReader(new TypeDocReader());
-    app.options.addReader(new PackageJsonReader());
-    app.options.addReader(new TSConfigReader());
-    // app.options.addReader(new ArgumentsReader(300));
-
-    await app.bootstrapWithPlugins({
+    const app = await Application.bootstrapWithPlugins({
       entryPoints,
       out: apiDocDir,
       readme: 'none',
@@ -158,8 +151,8 @@ export abstract class DevUtils {
       ...options,
     } as Partial<TypeDocOptions>);
 
-    const project = app.convert()!;
-    await app.generateDocs(project, API_DOCS_DIR);
+    const project = await app.convert();
+    await app.generateDocs(project!, API_DOCS_DIR);
   }
 
   /**
