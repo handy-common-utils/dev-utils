@@ -257,7 +257,7 @@ export abstract class DevUtils {
       'messageBody',
     ];
     const keys = whitelistKeys ? allPossibleKeys.filter(k => whitelistKeys.includes(k)) : allPossibleKeys;
-    const info = {} as Partial<GitInfo> & {errors: any[]};
+    const info = {} as {errors: any[]} & Partial<GitInfo>;
     // eslint-disable-next-line complexity
     await Promise.all(keys.map(async key => {
       try {

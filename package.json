@@ -41,11 +41,10 @@
   },
   "homepage": "https://github.com/handy-common-utils/dev-utils#readme",
   "dependencies": {
-    "@handy-common-utils/fs-utils": "^1.1.0",
+    "@handy-common-utils/fs-utils": "^1.1.2",
     "concat-md": "^0.5.1",
     "lodash": "^4.17.21",
     "serverless-plugin-git-variables": "^5.2.0",
-    "string.prototype.replaceall": "^1.0.7",
     "typedoc": "^0.24.7",
     "typedoc-plugin-markdown": "^3.15.3",
     "yaml": "^2.3.1"

@@ -3,17 +3,14 @@
  * @module
  */
 
-// eslint-disable-next-line unicorn/prefer-module
-const replaceAll = require('string.prototype.replaceall');
-
 export function convertRenderedPropertiesToTables(content: string): string {
   let result = content;
   // remove the list in ToC
-  result = replaceAll(result, /\n##### Properties\n[\0-\uFFFF]*?(?=(\n##)|$)/g, '');  // [\0-\uFFFF] is a workaround for unsupported "s" flag in ES2017
+  result = result.replaceAll(/\n##### Properties\n[\0-\uFFFF]*?(?=(\n##)|$)/g, '');  // [\0-\uFFFF] is a workaround for unsupported "s" flag in ES2017
 
   // transform the section of property details
   const sectionMatcher = /\n#{4} Properties\n([\0-\uFFFF]*?)(?=(\n#{4} )|\n{2}<a name=.+<\/a>\n{2}#{3}|$)/g;  // [\0-\uFFFF] is a workaround for unsupported "s" flag in ES2017
-  result = replaceAll(result, sectionMatcher, (p2: string) => {
+  result = result.replaceAll(sectionMatcher, (p2: string) => {
     const blocks = p2.split('___')  // one block for each property
       .map(s => {
         // eslint-disable-next-line unicorn/prefer-string-replace-all
@@ -31,7 +28,7 @@ export function convertRenderedPropertiesToTables(content: string): string {
                        .replace(/(<br>)+$/, '');
         // remove bullet styles
         headline = headline.replace(/^(• |▪ )/, '');
-        others = replaceAll(others, /(^|<br>)#{5,} /g, '');
+        others = others.replaceAll(/(^|<br>)#{5,} /g, '');
         return {
           headline,
           others,
