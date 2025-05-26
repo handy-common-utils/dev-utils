@@ -9,7 +9,7 @@ Tool chain utilities for the convenience of developers.
 
 ## Node.js version compatibility
 
-- Test cases have been verified with Node.js versions 18 20, and 22.
+- Test cases have been verified with Node.js versions 18, 20, and 22.
 - Compilation targe is ES2021.
 - Compatibility with ES2021 has been checked. 
 
