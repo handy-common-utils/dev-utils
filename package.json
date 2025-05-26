@@ -52,7 +52,7 @@
   "devDependencies": {
     "@handy-common-utils/dev-dependencies-mocha": "^1.5.4",
     "@types/lodash": "^4.14.191",
-    "@types/node": "^20.2.3"
+    "@types/node": "^22.15.21"
   },
   "bundleDependencies": [
     "serverless-plugin-git-variables"
