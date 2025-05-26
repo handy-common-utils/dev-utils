@@ -55,10 +55,6 @@
     "@types/lodash": "^4.14.191",
     "@types/node": "^20.2.3"
   },
-  "volta": {
-    "node": "16.17.1",
-    "npm": "8.19.2"
-  },
   "bundleDependencies": [
     "serverless-plugin-git-variables"
   ]
