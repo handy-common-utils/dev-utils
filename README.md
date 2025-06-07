@@ -180,13 +180,13 @@ npm i serverless-plugin-git-variables --legacy-peer-deps
 ## Classes
 
 
-<a name="classesdevutilsmd"></a>
+<a id="classesdevutilsmd"></a>
 
 ### Class: `abstract` DevUtils
 
 #### Constructors
 
-<a name="api-constructor"></a>
+<a id="api-constructor"></a>
 
 ##### Constructor
 
@@ -204,7 +204,7 @@ npm i serverless-plugin-git-variables --legacy-peer-deps
 
 #### Methods
 
-<a name="api-generateapidocsandupdatereadme"></a>
+<a id="api-generateapidocsandupdatereadme"></a>
 
 ##### generateApiDocsAndUpdateReadme()
 
@@ -235,7 +235,7 @@ DevUtils.generateApiDocsAndUpdateReadme(readmePath, entryPoints, apiDocDir);
 
 ***
 
-<a name="api-generateapidocsmd"></a>
+<a id="api-generateapidocsmd"></a>
 
 ##### generateApiDocsMd()
 
@@ -255,7 +255,7 @@ DevUtils.generateApiDocsAndUpdateReadme(readmePath, entryPoints, apiDocDir);
 
 ***
 
-<a name="api-getgitinfo"></a>
+<a id="api-getgitinfo"></a>
 
 ##### getGitInfo()
 
@@ -290,7 +290,7 @@ Git related information
 
 ***
 
-<a name="api-loadconfiguration"></a>
+<a id="api-loadconfiguration"></a>
 
 ##### loadConfiguration()
 
@@ -361,7 +361,7 @@ const config = DevUtils.loadConfiguration(
 
 ***
 
-<a name="api-loadconfigurationwithvariant"></a>
+<a id="api-loadconfigurationwithvariant"></a>
 
 ##### loadConfigurationWithVariant()
 
@@ -397,7 +397,7 @@ The combined configuration, or undefined if no configuration file can be found/r
 ## Interfaces
 
 
-<a name="interfacesgitinfomd"></a>
+<a id="interfacesgitinfomd"></a>
 
 ### Interface: GitInfo
 
@@ -423,7 +423,7 @@ Git related information. See https://github.com/jacob-meacham/serverless-plugin-
 | <a id="api-user"></a> `user` | `string` | current Git user's name as configured by `git config user.name ...` |
 
 
-<a name="interfacesloadconfigurationoptionsmd"></a>
+<a id="interfacesloadconfigurationoptionsmd"></a>
 
 ### Interface: LoadConfigurationOptions\<T\>
 
@@ -448,7 +448,7 @@ Options for loadConfiguration(...) function
 ## Type Aliases
 
 
-<a name="type-aliasesgitinfokeymd"></a>
+<a id="type-aliasesgitinfokeymd"></a>
 
 ### Type Alias: GitInfoKey
 
