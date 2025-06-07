@@ -9,7 +9,9 @@
   "compilerOptions": {
     "declaration": true,
     "importHelpers": true,
-    "module": "commonjs",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "skipLibCheck": true,
     "strict": true,
     "target": "es2021",
     "esModuleInterop": true,

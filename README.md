@@ -144,109 +144,122 @@ npm i serverless-plugin-git-variables --legacy-peer-deps
 <!-- API start -->
 <a name="readmemd"></a>
 
-## Module: dev-utils
+## dev-utils
 
 ### Re-exports
 
 #### Functions
 
-- [generateApiDocsMd = DevUtils.generateApiDocsMd](#generateApiDocsMd)
-- [generateApiDocsAndUpdateReadme = DevUtils.generateApiDocsAndUpdateReadme](#generateapidocsandupdatereadme)
-- [getGitInfo = DevUtils.getGitInfo](#getGitInfo)
-- [loadConfiguration = DevUtils.loadConfiguration](#loadConfiguration)
-- [loadConfigurationWithVariant = DevUtils.loadConfigurationWithVariant](#loadConfigurationWithVariant)
+- [generateApiDocsMd = DevUtils.generateApiDocsMd](#api-generateapidocsmd)
+- [generateApiDocsAndUpdateReadme = DevUtils.generateApiDocsAndUpdateReadme](#api-generateapidocsandupdatereadme)
+- [getGitInfo = DevUtils.getGitInfo](#api-getgitinfo)
+- [loadConfiguration = DevUtils.loadConfiguration](#api-loadconfiguration)
+- [loadConfigurationWithVariant = DevUtils.loadConfigurationWithVariant](#api-loadconfigurationwithvariant)
 
 ### Exports
 
 ### Classes
 
-- [DevUtils](#classesdev_utilsdevutilsmd)
+| Class | Description |
+| ------ | ------ |
+| [DevUtils](#classesdevutilsmd) | - |
 
 ### Interfaces
 
-- [GitInfo](#interfacesdev_utilsgitinfomd)
-- [LoadConfigurationOptions](#interfacesdev_utilsloadconfigurationoptionsmd)
+| Interface | Description |
+| ------ | ------ |
+| [GitInfo](#interfacesgitinfomd) | Git related information. See https://github.com/jacob-meacham/serverless-plugin-git-variables |
+| [LoadConfigurationOptions](#interfacesloadconfigurationoptionsmd) | Options for loadConfiguration(...) function |
 
 ### Type Aliases
 
-#### GitInfoKey
-
-Ƭ **GitInfoKey**: keyof [`GitInfo`](#interfacesdev_utilsgitinfomd)
+| Type Alias | Description |
+| ------ | ------ |
+| [GitInfoKey](#type-aliasesgitinfokeymd) | - |
 
 ## Classes
 
 
-<a name="classesdev_utilsdevutilsmd"></a>
+<a name="classesdevutilsmd"></a>
 
-### Class: DevUtils
-
-[dev-utils](#readmemd).DevUtils
+### Class: `abstract` DevUtils
 
 #### Constructors
 
-##### constructor
+<a name="api-constructor"></a>
 
-• **new DevUtils**()
+##### Constructor
+
+> **new DevUtils**(): `DevUtils`
+
+###### Returns
+
+`DevUtils`
 
 #### Properties
 
-| Property | Description |
-| --- | --- |
-| `Static` `Readonly` **DEFAULT\_OPTIONS\_FOR\_LOAD\_CONFIGURATION**: [`LoadConfigurationOptions`](#interfacesdev_utilsloadconfigurationoptionsmd)<`any`\> | Default options for `loadConfiguration(...)` |
-
+| Property | Modifier | Type | Description |
+| ------ | ------ | ------ | ------ |
+| <a id="api-default_options_for_load_configuration"></a> `DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION` | `readonly` | [`LoadConfigurationOptions`](#interfacesloadconfigurationoptionsmd) | Default options for `loadConfiguration(...)` |
 
 #### Methods
 
-##### generateApiDocsAndUpdateReadme
+<a name="api-generateapidocsandupdatereadme"></a>
 
-▸ `Static` **generateApiDocsAndUpdateReadme**(`readmeLocation?`, `entryPoints?`, `apiDocDir?`, `typeDocOptions?`): `Promise`<`void`\>
+##### generateApiDocsAndUpdateReadme()
+
+> `static` **generateApiDocsAndUpdateReadme**(`readmeLocation`, `entryPoints`, `apiDocDir`, `typeDocOptions?`): `Promise`\<`void`\>
 
 Generate API documentation and insert it into README.md file.
 
-**`Example`**
+###### Parameters
+
+| Parameter | Type | Default value | Description |
+| ------ | ------ | ------ | ------ |
+| `readmeLocation` | `string` | `README_MD_FILE` | location of the README.md file |
+| `entryPoints` | `string`[] | `...` | Entry points for generating API documentation |
+| `apiDocDir` | `string` | `API_DOCS_DIR` | temporary directory for storing intermediate documentation files |
+| `typeDocOptions?` | `Partial`\<`Omit`\<`TypeDocOptions`, `"entryPoints"` \| `"out"`\>\> | `undefined` | Options for TypeDoc |
+
+###### Returns
+
+`Promise`\<`void`\>
+
+Promise of void
+
+###### Example
 
 ```ts
 DevUtils.generateApiDocsAndUpdateReadme(readmePath, entryPoints, apiDocDir);
 ```
 
-###### Parameters
+***
 
-| Name | Type | Default value | Description |
-| :------ | :------ | :------ | :------ |
-| `readmeLocation` | `string` | `README_MD_FILE` | location of the README.md file |
-| `entryPoints` | `string`[] | `undefined` | Entry points for generating API documentation |
-| `apiDocDir` | `string` | `API_DOCS_DIR` | temporary directory for storing intermediate documentation files |
-| `typeDocOptions?` | `Partial`<`Omit`<`TypeDocOptions`, ``"out"`` \| ``"entryPoints"``\>\> | `undefined` | Options for TypeDoc |
+<a name="api-generateapidocsmd"></a>
 
-###### Returns
+##### generateApiDocsMd()
 
-`Promise`<`void`\>
-
-Promise of void
-
-___
-
-##### generateApiDocsMd
-
-▸ `Static` **generateApiDocsMd**(`entryPoints?`, `apiDocDir?`, `options?`): `Promise`<`void`\>
+> `static` **generateApiDocsMd**(`entryPoints`, `apiDocDir`, `options?`): `Promise`\<`void`\>
 
 ###### Parameters
 
-| Name | Type | Default value |
-| :------ | :------ | :------ |
-| `entryPoints` | `string`[] | `undefined` |
+| Parameter | Type | Default value |
+| ------ | ------ | ------ |
+| `entryPoints` | `string`[] | `...` |
 | `apiDocDir` | `string` | `API_DOCS_DIR` |
-| `options?` | `Partial`<`Omit`<`TypeDocOptions`, ``"out"`` \| ``"entryPoints"``\>\> | `undefined` |
+| `options?` | `Partial`\<`Omit`\<`TypeDocOptions`, `"entryPoints"` \| `"out"`\>\> | `undefined` |
 
 ###### Returns
 
-`Promise`<`void`\>
+`Promise`\<`void`\>
 
-___
+***
 
-##### getGitInfo
+<a name="api-getgitinfo"></a>
 
-▸ `Static` **getGitInfo**(`whitelistKeys?`, `checkEnvironmentVariables?`, `reportErrors?`): `Promise`<`Partial`<[`GitInfo`](#interfacesdev_utilsgitinfomd)\>\>
+##### getGitInfo()
+
+> `static` **getGitInfo**(`whitelistKeys?`, `checkEnvironmentVariables?`, `reportErrors?`): `Promise`\<`Partial`\<[`GitInfo`](#interfacesgitinfomd)\>\>
 
 Get Git related information. This function relies on the existence of Git command line.
 
@@ -263,23 +276,25 @@ they would be undefined in the returned object.
 
 ###### Parameters
 
-| Name | Type | Default value | Description |
-| :------ | :------ | :------ | :------ |
-| `whitelistKeys?` | keyof [`GitInfo`](#interfacesdev_utilsgitinfomd)[] | `undefined` | keys (property names) in the returned object that values need to be populated |
-| `checkEnvironmentVariables` | `boolean` | `true` | true (default value) if environment variables should be checked |
-| `reportErrors` | `boolean` | `false` | true if errors should be reported in the `errors: any[]` property of the returned object |
+| Parameter | Type | Default value | Description |
+| ------ | ------ | ------ | ------ |
+| `whitelistKeys?` | keyof [`GitInfo`](#interfacesgitinfomd)[] | `undefined` | keys (property names) in the returned object that values need to be populated |
+| `checkEnvironmentVariables?` | `boolean` | `true` | true (default value) if environment variables should be checked |
+| `reportErrors?` | `boolean` | `false` | true if errors should be reported in the `errors: any[]` property of the returned object |
 
 ###### Returns
 
-`Promise`<`Partial`<[`GitInfo`](#interfacesdev_utilsgitinfomd)\>\>
+`Promise`\<`Partial`\<[`GitInfo`](#interfacesgitinfomd)\>\>
 
 Git related information
 
-___
+***
 
-##### loadConfiguration
+<a name="api-loadconfiguration"></a>
 
-▸ `Static` **loadConfiguration**<`T`\>(`fileNameBase`, `overrideOptions?`): `undefined` \| `T`
+##### loadConfiguration()
+
+> `static` **loadConfiguration**\<`T`\>(`fileNameBase`, `overrideOptions?`): `undefined` \| `T`
 
 Load configuration from YAML and/or JSON files.
 This function is capable of reading multiple configuration files from the same directory and optionally its ancestor directories, and combine the configurations.
@@ -303,7 +318,26 @@ Other options: \
 `encoding`: encoding used when reading the file, default is 'utf8' \
 `merge`: the function for merging configurations, the default implementation uses lodash/merge \
 
-**`Example`**
+###### Type Parameters
+
+| Type Parameter | Default type |
+| ------ | ------ |
+| `T` | `any` |
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `fileNameBase` | `string` | Base part of the file name, usually this is the file name without extension, but you can also be creative. |
+| `overrideOptions?` | `Partial`\<[`LoadConfigurationOptions`](#interfacesloadconfigurationoptionsmd)\<`T`\>\> | Options that would be combined with default options. |
+
+###### Returns
+
+`undefined` \| `T`
+
+The combined configuration, or undefined if no configuration file can be found/read.
+
+###### Example
 
 ```ts
 // Pick up and merge (those to the left overrides those to the right) configurations from: ./my-config.yaml, ./my-config.yml, ./my-config.json
@@ -325,51 +359,34 @@ const config = DevUtils.loadConfiguration(
 );
 ```
 
-###### Type parameters
+***
 
-| Name | Type |
-| :------ | :------ |
-| `T` | `any` |
+<a name="api-loadconfigurationwithvariant"></a>
 
-###### Parameters
+##### loadConfigurationWithVariant()
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `fileNameBase` | `string` | Base part of the file name, usually this is the file name without extension, but you can also be creative. |
-| `overrideOptions?` | `Partial`<[`LoadConfigurationOptions`](#interfacesdev_utilsloadconfigurationoptionsmd)<`T`\>\> | Options that would be combined with default options. |
-
-###### Returns
-
-`undefined` \| `T`
-
-The combined configuration, or undefined if no configuration file can be found/read.
-
-___
-
-##### loadConfigurationWithVariant
-
-▸ `Static` **loadConfigurationWithVariant**<`T`\>(`fileNameBase`, `variant`, `baseVariant?`, `overrideOptions?`): `undefined` \| `T`
+> `static` **loadConfigurationWithVariant**\<`T`\>(`fileNameBase`, `variant`, `baseVariant`, `overrideOptions?`): `undefined` \| `T`
 
 Load configuration from YAML and/or JSON files with variant suffix.
 This function is capable of reading multiple configuration files from the same directory and optionally its ancestor directories, and combine the configurations.
-This function is based on [loadConfiguration](#loadconfiguration).
+This function is based on [loadConfiguration](#api-loadconfiguration).
 It picks up the specified variant configuration and the base variant configuration from a directory and optionally its ancestor directories,
 then merge them by overriding the base variant configuration with the specified variant configuration.
 
-###### Type parameters
+###### Type Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Type Parameter | Default type |
+| ------ | ------ |
 | `T` | `any` |
 
 ###### Parameters
 
-| Name | Type | Default value | Description |
-| :------ | :------ | :------ | :------ |
+| Parameter | Type | Default value | Description |
+| ------ | ------ | ------ | ------ |
 | `fileNameBase` | `string` | `undefined` | Base part of the file name, for example, `my-config`, `settings`. |
 | `variant` | `string` | `undefined` | Part of the file name that identifies the variant, for example, `.staging`, `-production`, `_test`. When searching for configuration files, it would be inserted between the fileNameBase and the file type suffix. |
 | `baseVariant` | `string` | `'.default'` | Part of the file name that identifies the base variant. The default value is `.default`. When searching for configuration files, it would be inserted between the fileNameBase and the file type suffix. |
-| `overrideOptions?` | `Partial`<[`LoadConfigurationOptions`](#interfacesdev_utilsloadconfigurationoptionsmd)<`T`\>\> | `undefined` | Options that would be combined with default options. |
+| `overrideOptions?` | `Partial`\<[`LoadConfigurationOptions`](#interfacesloadconfigurationoptionsmd)\<`T`\>\> | `undefined` | Options that would be combined with default options. |
 
 ###### Returns
 
@@ -380,57 +397,60 @@ The combined configuration, or undefined if no configuration file can be found/r
 ## Interfaces
 
 
-<a name="interfacesdev_utilsgitinfomd"></a>
+<a name="interfacesgitinfomd"></a>
 
 ### Interface: GitInfo
-
-[dev-utils](#readmemd).GitInfo
 
 Git related information. See https://github.com/jacob-meacham/serverless-plugin-git-variables
 
 #### Properties
 
-| Property | Description |
-| --- | --- |
-| **branch**: `string` | name of the current branch |
-| **commitIdLong**: `string` | hash of the current commit, a.k.a. commit ID, in full |
-| **commitIdShort**: `string` | hash of the current commit, a.k.a. commit ID, in short format |
-| **describe**: `string` | the most recent tag of the repo, evaluates to `git describe --always` |
-| **describeLight**: `string` | the most recent tag of the repo, evaluates to `git describe --always --tags` |
-| **email**: `string` | current Git user's email as configured by `git config user.email ...` |
-| **isDirty**: `boolean` | true if the workspace is currently dirty |
-| **message**: `string` | full git commit message |
-| **messageBody**: `string` | body of the commit message, as `git log -1 --pretty=%b` |
-| **messageSubject**: `string` | subject of the commit message, as `git log -1 --pretty=%s` |
-| **repository**: `string` | name of the git repository |
-| **tag**: `string` | First tag on the current commit, or sha1/ID of the commit if there's no tag |
-| **tags**: `string`[] | tags on the current commit, or sha1/ID of the commit if there's no tag |
-| **user**: `string` | current Git user's name as configured by `git config user.name ...` |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="api-branch"></a> `branch` | `string` | name of the current branch |
+| <a id="api-commitidlong"></a> `commitIdLong` | `string` | hash of the current commit, a.k.a. commit ID, in full |
+| <a id="api-commitidshort"></a> `commitIdShort` | `string` | hash of the current commit, a.k.a. commit ID, in short format |
+| <a id="api-describe"></a> `describe` | `string` | the most recent tag of the repo, evaluates to `git describe --always` |
+| <a id="api-describelight"></a> `describeLight` | `string` | the most recent tag of the repo, evaluates to `git describe --always --tags` |
+| <a id="api-email"></a> `email` | `string` | current Git user's email as configured by `git config user.email ...` |
+| <a id="api-isdirty"></a> `isDirty` | `boolean` | true if the workspace is currently dirty |
+| <a id="api-message"></a> `message` | `string` | full git commit message |
+| <a id="api-messagebody"></a> `messageBody` | `string` | body of the commit message, as `git log -1 --pretty=%b` |
+| <a id="api-messagesubject"></a> `messageSubject` | `string` | subject of the commit message, as `git log -1 --pretty=%s` |
+| <a id="api-repository"></a> `repository` | `string` | name of the git repository |
+| <a id="api-tag"></a> `tag` | `string` | First tag on the current commit, or sha1/ID of the commit if there's no tag |
+| <a id="api-tags"></a> `tags` | `string`[] | tags on the current commit, or sha1/ID of the commit if there's no tag |
+| <a id="api-user"></a> `user` | `string` | current Git user's name as configured by `git config user.name ...` |
 
 
+<a name="interfacesloadconfigurationoptionsmd"></a>
 
-<a name="interfacesdev_utilsloadconfigurationoptionsmd"></a>
-
-### Interface: LoadConfigurationOptions<T\>
-
-[dev-utils](#readmemd).LoadConfigurationOptions
+### Interface: LoadConfigurationOptions\<T\>
 
 Options for loadConfiguration(...) function
 
-#### Type parameters
+#### Type Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Type Parameter | Default type |
+| ------ | ------ |
 | `T` | `any` |
 
 #### Properties
 
-| Property | Description |
-| --- | --- |
-| **dir**: `string` | In which directory configuration file(s) should be picked up |
-| **encoding**: `BufferEncoding` | Encoding of the configuration files |
-| **extensions**: `Record`<`string`, ``"json"`` \| ``"yaml"``\> | File extensions that should be picked up. It is an object. For each property, the key is the file extension, the value is the file/parser type. |
-| **merge**: (`base`: `undefined` \| `T`, `override`: `undefined` \| `T`) => `T` | Function for merging the configurations from different files.<br>It is supposed to merge the object on the right to the object on the left.<br>The function is also supposed to return the modified object on the left. |
-| **shouldCheckAncestorDir**: (`level`: `number`, `dirName`: `string`, `dirAbsolutePath`: `string`, `consolidatedConfiguration`: `undefined` \| `Partial`<`T`\>, `previousDirAbsolutePath`: `string`) => `boolean` | Predicate function for deciding whether configuration files in the ancestor directory should be picked up |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="api-dir"></a> `dir` | `string` | In which directory configuration file(s) should be picked up |
+| <a id="api-encoding"></a> `encoding` | `BufferEncoding` | Encoding of the configuration files |
+| <a id="api-extensions"></a> `extensions` | `Record`\<`string`, keyof *typeof* `configurationParsers`\> | File extensions that should be picked up. It is an object. For each property, the key is the file extension, the value is the file/parser type. |
+| <a id="api-merge"></a> `merge` | (`base`, `override`) => `T` | Function for merging the configurations from different files. It is supposed to merge the object on the right to the object on the left. The function is also supposed to return the modified object on the left. |
+| <a id="api-shouldcheckancestordir"></a> `shouldCheckAncestorDir` | (`level`, `dirName`, `dirAbsolutePath`, `consolidatedConfiguration`, `previousDirAbsolutePath`) => `boolean` | Predicate function for deciding whether configuration files in the ancestor directory should be picked up |
 
+## Type Aliases
+
+
+<a name="type-aliasesgitinfokeymd"></a>
+
+### Type Alias: GitInfoKey
+
+> **GitInfoKey** = keyof [`GitInfo`](#interfacesgitinfomd)
 <!-- API end -->

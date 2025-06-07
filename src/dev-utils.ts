@@ -3,34 +3,40 @@
 /* eslint-disable unicorn/prefer-string-slice */
 /* eslint-disable unicorn/switch-case-braces */
 /* eslint-disable default-param-last */
+
 /**
  * ## Re-exports
  *
  * ### Functions
  *
- * - [generateApiDocsMd = DevUtils.generateApiDocsMd](../classes/dev_utils.DevUtils.md#generateApiDocsMd)
- * - [generateApiDocsAndUpdateReadme = DevUtils.generateApiDocsAndUpdateReadme](../classes/dev_utils.DevUtils.md#generateapidocsandupdatereadme)
- * - [getGitInfo = DevUtils.getGitInfo](../classes/dev_utils.DevUtils.md#getGitInfo)
- * - [loadConfiguration = DevUtils.loadConfiguration](../classes/dev_utils.DevUtils.md#loadConfiguration)
- * - [loadConfigurationWithVariant = DevUtils.loadConfigurationWithVariant](../classes/dev_utils.DevUtils.md#loadConfigurationWithVariant)
+ * - [generateApiDocsMd = DevUtils.generateApiDocsMd](classes/DevUtils.md#api-generateapidocsmd)
+ * - [generateApiDocsAndUpdateReadme = DevUtils.generateApiDocsAndUpdateReadme](classes/DevUtils.md#api-generateapidocsandupdatereadme)
+ * - [getGitInfo = DevUtils.getGitInfo](classes/DevUtils.md#api-getgitinfo)
+ * - [loadConfiguration = DevUtils.loadConfiguration](classes/DevUtils.md#api-loadconfiguration)
+ * - [loadConfigurationWithVariant = DevUtils.loadConfigurationWithVariant](classes/DevUtils.md#api-loadconfigurationwithvariant)
  *
  * ## Exports
  *
  * @module
  */
+
+import type { TypeDocOptions } from 'typedoc' assert { 'resolution-mode': 'import' };
+
 import { FsUtils } from '@handy-common-utils/fs-utils';
 import concatMd from 'concat-md';
 import * as fs from 'fs';
 import mergeDeep from 'lodash/merge';
 // eslint-disable-next-line unicorn/import-style
 import * as path from 'path';
-// eslint-disable-next-line node/no-missing-import
-import { Application, PackageJsonReader, TSConfigReader, TypeDocOptions, TypeDocReader } from 'typedoc';
 import YAML from 'yaml';
 
-import { convertRenderedPropertiesToTables } from './utils/api-docs-utils';
 // eslint-disable-next-line unicorn/prefer-module
 const ServerlessGitVariables = require('serverless-plugin-git-variables');
+import {
+  getSingleSubdirectory,
+  replaceAnchorIdWithNameInMdFiles,
+  replaceAnchorNameWithId,
+} from './utils/api-docs-utils';
 
 const API_DOCS_DIR = 'api-docs';
 const README_MD_FILE = 'README.md';
@@ -134,14 +140,8 @@ export interface LoadConfigurationOptions<T = any> {
 
 export abstract class DevUtils {
   static async generateApiDocsMd(entryPoints = ['./src'], apiDocDir = API_DOCS_DIR, options?: Partial<Omit<TypeDocOptions, 'out'|'entryPoints'>>): Promise<void> {
-    const app = new Application();
-    // app.options.addReader(new ArgumentsReader(0));
-    app.options.addReader(new TypeDocReader());
-    app.options.addReader(new PackageJsonReader());
-    app.options.addReader(new TSConfigReader());
-    // app.options.addReader(new ArgumentsReader(300));
-
-    await app.bootstrapWithPlugins({
+    const { Application, PackageJsonReader, TSConfigReader, TypeDocReader } = await import('typedoc');
+    const app = await Application.bootstrapWithPlugins({
       entryPoints,
       out: apiDocDir,
       readme: 'none',
@@ -153,13 +153,26 @@ export abstract class DevUtils {
       theme: 'markdown',
       // https://www.npmjs.com/package/typedoc-plugin-markdown
       hideBreadcrumbs: true,
-      hideInPageTOC: true,
-      namedAnchors: false,
+      hidePageHeader: true,
+      useHTMLAnchors: true,
+      anchorPrefix: 'api-',
+      interfacePropertiesFormat: 'table',
+      classPropertiesFormat: 'table',
+      parametersFormat: 'table',
+      indexFormat: 'table',
+      typeAliasPropertiesFormat: 'table',
+      enumMembersFormat: 'table',
+      propertyMembersFormat: 'table',
+      typeDeclarationFormat: 'table',
       ...options,
-    } as Partial<TypeDocOptions>);
+    } as Partial<TypeDocOptions>, [
+      new TypeDocReader(),
+      new PackageJsonReader(),
+      new TSConfigReader(),
+    ]);
 
-    const project = app.convert()!;
-    await app.generateDocs(project, API_DOCS_DIR);
+    const project = await app.convert();
+    await app.generateOutputs(project!);
   }
 
   /**
@@ -177,41 +190,27 @@ export abstract class DevUtils {
   ): Promise<void> {
     await DevUtils.generateApiDocsMd(entryPoints, apiDocDir, typeDocOptions);
 
-    // if there's only one module, use its .md as README.md
-    let elevatedModuleMdFileName;
-    const moduleMdFileDir = path.join(apiDocDir, 'modules');
-    if (fs.existsSync(moduleMdFileDir)) {
-      const moduleMdFiles = fs.readdirSync(moduleMdFileDir);
-      if (moduleMdFiles.length === 1) {
-        elevatedModuleMdFileName = moduleMdFiles[0];
-        const moduleMdFile = path.join(moduleMdFileDir, elevatedModuleMdFileName);
-        const readmeMdFile = path.join(apiDocDir, 'README.md');
-        if (fs.existsSync(readmeMdFile)) {
-          fs.rmSync(readmeMdFile);
-        }
-        fs.renameSync(moduleMdFile, readmeMdFile);
-        // fix links
-        await FsUtils.replaceInFile(readmeMdFile, /]\(\.\.\//g, '](');
-        await FsUtils.replaceInFile(readmeMdFile, new RegExp(`]\\(${elevatedModuleMdFileName}#`, 'g'), '](#');
-      }
+    let apiDocMdDir = apiDocDir;
+    const singleSubdir = getSingleSubdirectory(apiDocMdDir);
+    if (singleSubdir) {
+      apiDocMdDir = singleSubdir;
     }
 
-    const apiDocsContentPromise = concatMd(apiDocDir, {
+    // For every file under apiDocMdDir, replace <a id="..." /> with <a name="..."></a> because concat-md handles only <a name="..."></a>
+    replaceAnchorIdWithNameInMdFiles(apiDocMdDir);
+
+    const apiDocsContentPromise = concatMd(apiDocMdDir, {
       toc: false,
       decreaseTitleLevels: true,
       dirNameAsTitle: true,
       startTitleLevelAt: 2,
     })
-    // eslint-disable-next-line unicorn/prefer-string-replace-all
-    .then(content => content.replace(/##+ Table of contents\n/g, ''))
-    .then(content => convertRenderedPropertiesToTables(content))
+    .then(content => content.replaceAll(/##+ Table of contents\n/g, ''))
+    // Replace <a name="..." /> with <a id="..."></a> because vscode likes it better
+    .then(content => replaceAnchorNameWithId(content))
     .then(content => `<!-- API start -->${content}<!-- API end -->`)
     .then(content => FsUtils.escapeRegExpReplacement(content));
     await FsUtils.replaceInFile(readmeLocation, /<!-- API start -->([\S\s]*)<!-- API end -->/m, () => apiDocsContentPromise);
-    if (elevatedModuleMdFileName) {
-      await FsUtils.replaceInFile(readmeLocation, new RegExp(`]\\(\\.\\./modules/${elevatedModuleMdFileName}\\)`, 'g'), '](#readmemd)');
-    }
-    await FsUtils.addSurroundingInFile(readmeLocation, /\*\*`example`\*\*([\S\s]*?)###/gm, '**`example`**\n```javascript\n', '```\n###');
   }
 
   /**
