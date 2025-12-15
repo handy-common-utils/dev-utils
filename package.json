@@ -52,7 +52,7 @@
   "devDependencies": {
     "@handy-common-utils/dev-dependencies-mocha": "^1.6.1",
     "@types/lodash": "^4.17.17",
-    "@types/node": "^24.5.2",
+    "@types/node": "^25.0.2",
     "typescript": "^5.8.3"
   },
   "bundleDependencies": [
