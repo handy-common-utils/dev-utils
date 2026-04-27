@@ -182,7 +182,7 @@ npm i serverless-plugin-git-variables --legacy-peer-deps
 
 <a id="classesdevutilsmd"></a>
 
-### Class: `abstract` DevUtils
+### Abstract Class: DevUtils
 
 #### Constructors
 
@@ -200,7 +200,7 @@ npm i serverless-plugin-git-variables --legacy-peer-deps
 
 | Property | Modifier | Type | Description |
 | ------ | ------ | ------ | ------ |
-| <a id="api-default_options_for_load_configuration"></a> `DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION` | `readonly` | [`LoadConfigurationOptions`](#interfacesloadconfigurationoptionsmd) | Default options for `loadConfiguration(...)` |
+| <a id="api-property-default_options_for_load_configuration"></a> `DEFAULT_OPTIONS_FOR_LOAD_CONFIGURATION` | `readonly` | [`LoadConfigurationOptions`](#interfacesloadconfigurationoptionsmd) | Default options for `loadConfiguration(...)` |
 
 #### Methods
 
@@ -208,7 +208,7 @@ npm i serverless-plugin-git-variables --legacy-peer-deps
 
 ##### generateApiDocsAndUpdateReadme()
 
-> `static` **generateApiDocsAndUpdateReadme**(`readmeLocation`, `entryPoints`, `apiDocDir`, `typeDocOptions?`): `Promise`\<`void`\>
+> `static` **generateApiDocsAndUpdateReadme**(`readmeLocation?`, `entryPoints?`, `apiDocDir?`, `typeDocOptions?`): `Promise`\<`void`\>
 
 Generate API documentation and insert it into README.md file.
 
@@ -239,7 +239,7 @@ DevUtils.generateApiDocsAndUpdateReadme(readmePath, entryPoints, apiDocDir);
 
 ##### generateApiDocsMd()
 
-> `static` **generateApiDocsMd**(`entryPoints`, `apiDocDir`, `options?`): `Promise`\<`void`\>
+> `static` **generateApiDocsMd**(`entryPoints?`, `apiDocDir?`, `options?`): `Promise`\<`void`\>
 
 ###### Parameters
 
@@ -294,7 +294,7 @@ Git related information
 
 ##### loadConfiguration()
 
-> `static` **loadConfiguration**\<`T`\>(`fileNameBase`, `overrideOptions?`): `undefined` \| `T`
+> `static` **loadConfiguration**\<`T`\>(`fileNameBase`, `overrideOptions?`): `T` \| `undefined`
 
 Load configuration from YAML and/or JSON files.
 This function is capable of reading multiple configuration files from the same directory and optionally its ancestor directories, and combine the configurations.
@@ -333,7 +333,7 @@ Other options: \
 
 ###### Returns
 
-`undefined` \| `T`
+`T` \| `undefined`
 
 The combined configuration, or undefined if no configuration file can be found/read.
 
@@ -365,7 +365,7 @@ const config = DevUtils.loadConfiguration(
 
 ##### loadConfigurationWithVariant()
 
-> `static` **loadConfigurationWithVariant**\<`T`\>(`fileNameBase`, `variant`, `baseVariant`, `overrideOptions?`): `undefined` \| `T`
+> `static` **loadConfigurationWithVariant**\<`T`\>(`fileNameBase`, `variant`, `baseVariant?`, `overrideOptions?`): `T` \| `undefined`
 
 Load configuration from YAML and/or JSON files with variant suffix.
 This function is capable of reading multiple configuration files from the same directory and optionally its ancestor directories, and combine the configurations.
@@ -390,7 +390,7 @@ then merge them by overriding the base variant configuration with the specified 
 
 ###### Returns
 
-`undefined` \| `T`
+`T` \| `undefined`
 
 The combined configuration, or undefined if no configuration file can be found/read.
 
@@ -407,20 +407,20 @@ Git related information. See https://github.com/jacob-meacham/serverless-plugin-
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| <a id="api-branch"></a> `branch` | `string` | name of the current branch |
-| <a id="api-commitidlong"></a> `commitIdLong` | `string` | hash of the current commit, a.k.a. commit ID, in full |
-| <a id="api-commitidshort"></a> `commitIdShort` | `string` | hash of the current commit, a.k.a. commit ID, in short format |
-| <a id="api-describe"></a> `describe` | `string` | the most recent tag of the repo, evaluates to `git describe --always` |
-| <a id="api-describelight"></a> `describeLight` | `string` | the most recent tag of the repo, evaluates to `git describe --always --tags` |
-| <a id="api-email"></a> `email` | `string` | current Git user's email as configured by `git config user.email ...` |
-| <a id="api-isdirty"></a> `isDirty` | `boolean` | true if the workspace is currently dirty |
-| <a id="api-message"></a> `message` | `string` | full git commit message |
-| <a id="api-messagebody"></a> `messageBody` | `string` | body of the commit message, as `git log -1 --pretty=%b` |
-| <a id="api-messagesubject"></a> `messageSubject` | `string` | subject of the commit message, as `git log -1 --pretty=%s` |
-| <a id="api-repository"></a> `repository` | `string` | name of the git repository |
-| <a id="api-tag"></a> `tag` | `string` | First tag on the current commit, or sha1/ID of the commit if there's no tag |
-| <a id="api-tags"></a> `tags` | `string`[] | tags on the current commit, or sha1/ID of the commit if there's no tag |
-| <a id="api-user"></a> `user` | `string` | current Git user's name as configured by `git config user.name ...` |
+| <a id="api-property-branch"></a> `branch` | `string` | name of the current branch |
+| <a id="api-property-commitidlong"></a> `commitIdLong` | `string` | hash of the current commit, a.k.a. commit ID, in full |
+| <a id="api-property-commitidshort"></a> `commitIdShort` | `string` | hash of the current commit, a.k.a. commit ID, in short format |
+| <a id="api-property-describe"></a> `describe` | `string` | the most recent tag of the repo, evaluates to `git describe --always` |
+| <a id="api-property-describelight"></a> `describeLight` | `string` | the most recent tag of the repo, evaluates to `git describe --always --tags` |
+| <a id="api-property-email"></a> `email` | `string` | current Git user's email as configured by `git config user.email ...` |
+| <a id="api-property-isdirty"></a> `isDirty` | `boolean` | true if the workspace is currently dirty |
+| <a id="api-property-message"></a> `message` | `string` | full git commit message |
+| <a id="api-property-messagebody"></a> `messageBody` | `string` | body of the commit message, as `git log -1 --pretty=%b` |
+| <a id="api-property-messagesubject"></a> `messageSubject` | `string` | subject of the commit message, as `git log -1 --pretty=%s` |
+| <a id="api-property-repository"></a> `repository` | `string` | name of the git repository |
+| <a id="api-property-tag"></a> `tag` | `string` | First tag on the current commit, or sha1/ID of the commit if there's no tag |
+| <a id="api-property-tags"></a> `tags` | `string`[] | tags on the current commit, or sha1/ID of the commit if there's no tag |
+| <a id="api-property-user"></a> `user` | `string` | current Git user's name as configured by `git config user.name ...` |
 
 
 <a id="interfacesloadconfigurationoptionsmd"></a>
@@ -439,11 +439,11 @@ Options for loadConfiguration(...) function
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| <a id="api-dir"></a> `dir` | `string` | In which directory configuration file(s) should be picked up |
-| <a id="api-encoding"></a> `encoding` | `BufferEncoding` | Encoding of the configuration files |
-| <a id="api-extensions"></a> `extensions` | `Record`\<`string`, keyof *typeof* `configurationParsers`\> | File extensions that should be picked up. It is an object. For each property, the key is the file extension, the value is the file/parser type. |
-| <a id="api-merge"></a> `merge` | (`base`, `override`) => `T` | Function for merging the configurations from different files. It is supposed to merge the object on the right to the object on the left. The function is also supposed to return the modified object on the left. |
-| <a id="api-shouldcheckancestordir"></a> `shouldCheckAncestorDir` | (`level`, `dirName`, `dirAbsolutePath`, `consolidatedConfiguration`, `previousDirAbsolutePath`) => `boolean` | Predicate function for deciding whether configuration files in the ancestor directory should be picked up |
+| <a id="api-property-dir"></a> `dir` | `string` | In which directory configuration file(s) should be picked up |
+| <a id="api-property-encoding"></a> `encoding` | `BufferEncoding` | Encoding of the configuration files |
+| <a id="api-property-extensions"></a> `extensions` | `Record`\<`string`, keyof *typeof* `configurationParsers`\> | File extensions that should be picked up. It is an object. For each property, the key is the file extension, the value is the file/parser type. |
+| <a id="api-property-merge"></a> `merge` | (`base`, `override`) => `T` | Function for merging the configurations from different files. It is supposed to merge the object on the right to the object on the left. The function is also supposed to return the modified object on the left. |
+| <a id="api-property-shouldcheckancestordir"></a> `shouldCheckAncestorDir` | (`level`, `dirName`, `dirAbsolutePath`, `consolidatedConfiguration`, `previousDirAbsolutePath`) => `boolean` | Predicate function for deciding whether configuration files in the ancestor directory should be picked up |
 
 ## Type Aliases
 
