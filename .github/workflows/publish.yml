@@ -13,4 +13,5 @@ jobs:
       - name: Publish to NPM registry
         uses: handy-common-utils/automation/github/actions/publish-npm@main
         with:
+          node-version: .nvmrc
           npm-publish-token: ${{ secrets.NPM_PUBLISH_TOKEN }}
