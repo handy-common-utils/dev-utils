@@ -7,6 +7,7 @@
     "**/*.spec.ts"
   ],
   "compilerOptions": {
+    "rootDir": "./src",
     "declaration": true,
     "importHelpers": true,
     "module": "nodenext",
@@ -16,7 +17,13 @@
     "target": "es2021",
     "esModuleInterop": true,
     "declarationMap": true,
-    "lib": ["es2021"],
+    "lib": [
+      "es2022"
+    ],
+    "types": [
+      "node",
+      "mocha"
+    ],
     "forceConsistentCasingInFileNames": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,

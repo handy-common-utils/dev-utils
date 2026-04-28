@@ -9,7 +9,7 @@
   },
   "scripts": {
     "pretest": "eslint . --ext .ts",
-    "test": "nyc mocha",
+    "test": "c8 mocha",
     "fixPeerDependencies": "replace-in-files '\"serverless\": *\".+?\",*' '' node_modules/serverless-plugin-git-variables/package.json package-lock.json",
     "prepare": "shx rm -rf dist && npm run fixPeerDependencies && tsc && shx chmod +x dist/bin/*.js && es-check",
     "preversion": "npm run prepare && dist/bin/generate-api-docs-and-update-readme.js && git add README.md"
@@ -50,10 +50,9 @@
     "yaml": "^2.8.0"
   },
   "devDependencies": {
-    "@handy-common-utils/dev-dependencies-mocha": "^1.6.1",
+    "@handy-common-utils/dev-dependencies-mocha": "^1.11.7",
     "@types/lodash": "^4.17.17",
-    "@types/node": "^25.0.2",
-    "typescript": "^5.8.3"
+    "@types/node": "^25.0.2"
   },
   "bundleDependencies": [
     "serverless-plugin-git-variables"

@@ -27,7 +27,6 @@ export function replaceAnchorNameWithId(content: string): string {
 /**
  * For every Markdown file under a directory (recursively), replace <a id="..."></a> with <a name="..."></a>.
  * @param dir - The directory to recursively process Markdown files in.
- * @returns void
  */
 export function replaceAnchorIdWithNameInMdFiles(dir: string): void {
   const entries = fs.readdirSync(dir, { withFileTypes: true });

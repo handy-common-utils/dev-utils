@@ -10,5 +10,6 @@
         "readmemd",
         "replaceall",
         "Vars"
-    ]
+    ],
+    "eslint.useFlatConfig": true
 }

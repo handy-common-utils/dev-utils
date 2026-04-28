@@ -20,7 +20,6 @@ describe('DevUtils', () => {
       }
       fs.mkdirSync(TMP_DIR);
       const readmePath = path.join(TMP_DIR, 'README.md');
-      // eslint-disable-next-line node/no-unsupported-features/node-builtins
       fs.copyFileSync('README.md', readmePath);
       await FsUtils.replaceInFile(readmePath, /<!-- API start -->([\S\s]*)<!-- API end -->/m, PATTERN_STRING);
       expect(fs.readFileSync(readmePath, 'utf8')).to.include(PATTERN_STRING);

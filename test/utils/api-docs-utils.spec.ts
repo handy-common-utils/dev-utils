@@ -1,6 +1,5 @@
 /* eslint-disable unicorn/prefer-node-protocol */
 /* eslint-disable unicorn/prefer-module */
-/* eslint-disable unicorn/text-encoding-identifier-case */
 import { expect } from 'chai';
 import fs from 'fs';
 import path from 'path';

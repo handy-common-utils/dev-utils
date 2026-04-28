@@ -1,8 +1,6 @@
 /* eslint-disable unicorn/prefer-node-protocol */
-/* eslint-disable unicorn/consistent-destructuring */
 /* eslint-disable unicorn/prefer-string-slice */
 /* eslint-disable unicorn/switch-case-braces */
-/* eslint-disable default-param-last */
 
 /**
  * ## Re-exports
@@ -26,12 +24,11 @@ import { FsUtils } from '@handy-common-utils/fs-utils';
 import concatMd from 'concat-md';
 import * as fs from 'fs';
 import mergeDeep from 'lodash/merge';
-// eslint-disable-next-line unicorn/import-style
-import * as path from 'path';
+import path from 'node:path';
+// eslint-disable-next-line unicorn/prefer-module, @typescript-eslint/no-require-imports
+const ServerlessGitVariables = require('serverless-plugin-git-variables');
 import YAML from 'yaml';
 
-// eslint-disable-next-line unicorn/prefer-module
-const ServerlessGitVariables = require('serverless-plugin-git-variables');
 import {
   getSingleSubdirectory,
   replaceAnchorIdWithNameInMdFiles,
@@ -256,8 +253,7 @@ export abstract class DevUtils {
       'messageBody',
     ];
     const keys = whitelistKeys ? allPossibleKeys.filter(k => whitelistKeys.includes(k)) : allPossibleKeys;
-    const info = {} as {errors: any[]} & Partial<GitInfo>;
-    // eslint-disable-next-line complexity
+    const info = {} as Partial<GitInfo> & {errors: any[]};
     await Promise.all(keys.map(async key => {
       try {
         switch (key) {
@@ -360,7 +356,7 @@ export abstract class DevUtils {
     let consolidatedConfiguration: T | undefined;
 
     let { dir } = options;
-    let dirName = path.basename(dir);
+    let dirName: string;
     let previousDir: string;
     let level = 0;
     do {
@@ -383,7 +379,7 @@ export abstract class DevUtils {
           consolidatedConfiguration = consolidatedConfiguration ? options.merge(fileContentObj, consolidatedConfiguration) : fileContentObj;
           previousDir = path.resolve(dir);
         } catch (error: any) {
-          throw new Error(`Unable to parse the content in "${filePath}" as "${fileType}": ${error?.message}`);
+          throw new Error(`Unable to parse the content in "${filePath}" as "${fileType}": ${error?.message}`, { cause: error });
         }
       }
 
