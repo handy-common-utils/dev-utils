@@ -13,38 +13,77 @@ Tool chain utilities for the convenience of developers.
 - Compilation target is ES2021.
 - Compatibility with ES2021 has been checked. 
 
-## How to use - generating API doc and update README.md
+## Installation
 
-Normally you don't use this package directly (although it is perfectly fine to use this package alone).
-Instead, you add `@handy-common-utils/dev-dependencies`as a dev dependency (which in turn depends on this package):
+You can install this package directly as a development dependency:
+
+```sh
+npm install -D @handy-common-utils/dev-utils
+```
+
+Alternatively, you can add `@handy-common-utils/dev-dependencies` (which includes this package as a dependency):
 
 ```sh
 npm install -D @handy-common-utils/dev-dependencies
 ```
 
-After installation, the command line `generate-api-docs-and-update-readme` will be available in your project.
-This command line can update the `<!--` `API start` `-->...<!--` `API end` `-->` section
-in your `README.md` with generated API documentation.
+## How to use - generating API doc and update README.md
 
-You can use optional command line arguments to customise the behaviour of `generate-api-docs-and-update-readme`:
+After installation, the command line utility `generate-api-docs-and-update-readme` will be available in your project.
+This command updates the `<!-- API start -->...<!-- API end -->` section in your `README.md` with generated API documentation.
 
-1. Path of the readme.md file. The path must ends with ".md" (case insensitive). The file would be modified. Default: `README.md`.
-2. Entry points for generating API documentation. Multiple entry points can be specified by joining them with comma (`,`). Default: `./src`.
-3. path of the directory for storing generated intermediate documentation files. This directory would not be cleaned up. Default: `api-docs`.
+### CLI Usage
 
-These arguments must be specified in the order as shown above.
+```sh
+# Basic usage with default arguments:
+# 1. README.md (output file)
+# 2. ./src (entry points)
+# 3. api-docs (temporary generation directory)
+npx generate-api-docs-and-update-readme
+
+# Customizing readme path, entry points (comma-separated), and temp directory:
+npx generate-api-docs-and-update-readme README.md ./src/index.ts,./src/utils.ts tmp-api-docs
+```
+
+You can use optional command line arguments to customize the behavior. If specified, they must be provided in the following order:
+
+1. **Path of the readme file**: The path must end with `.md` (case-insensitive). This file will be modified. Default: `README.md`.
+2. **Entry points**: Multiple entry points can be specified by joining them with a comma (`,`). Default: `./src`.
+3. **Path of the temporary directory**: Used for storing generated intermediate documentation files. This directory will not be cleaned up automatically. Default: `api-docs`.
+
+---
 
 ## How to use - getGitInfo(...)
 
-`const info = await DevUtils.getGitInfo();` is how you can get Git repository related information,
-such as repository, branch, commit id, tags, etc.
-It relies on the Git command line tool ('git') to have already been installed.
+`getGitInfo` allows you to retrieve Git repository-related information such as repository name, current branch, commit IDs, tags, etc. It relies on the Git command line tool (`git`) being installed.
 
-The function accepts two optional arguments. The first one allows you to specify which properties/info to return.
-The second one allows you to control whether environment variables should be checked.
-By default all properties/info would be returned and environment variables would be checked before falling back to checking local Git repository.
+### Importing
 
-Checking environment variables is handy when you use it in a build/CI/CD pipeline.
+You can use either the class-based wrapper or import the function directly:
+
+```typescript
+// Direct function import (recommended for ES Modules / TypeScript)
+import { getGitInfo } from '@handy-common-utils/dev-utils';
+const info = await getGitInfo();
+
+// Class-based import
+import { DevUtils } from '@handy-common-utils/dev-utils';
+const info = await DevUtils.getGitInfo();
+```
+
+### Usage Examples
+
+```typescript
+// 1. Get all available Git info (default)
+const info = await getGitInfo();
+
+// 2. Retrieve only a subset of properties (whitelist keys)
+const info = await getGitInfo(['repository', 'branch', 'commitIdShort']);
+
+// 3. Skip environment variables check (always query git directly)
+// By default, environment variables (GIT_COMMIT, GITHUB_SHA, etc.) are checked first.
+const info = await getGitInfo(undefined, false);
+```
 
 Below is an example output:
 ```javascript
@@ -66,80 +105,85 @@ Below is an example output:
 }
 ```
 
-Details of the properties in this structure can be found in [the documentation of `GitInfo` interface](#interfacesdev_utilsgitinfomd).
+Details of the properties in this structure can be found in the documentation of the [GitInfo interface](#interfacesgitinfomd).
 
-The functionality depends on [serverless-plugin-git-variables](https://github.com/jacob-meacham/serverless-plugin-git-variables). Check it out if you are interested.
+This functionality depends on [serverless-plugin-git-variables](https://github.com/jacob-meacham/serverless-plugin-git-variables).
+
+---
 
 ## How to use - loadConfiguration(...) and loadConfigurationWithVariant(...)
 
-The function `loadConfiguration(...)` / `DevUtils.loadConfiguration(...)` would be handy if you need to read configuration from YAML and/or JSON files.
+Use `loadConfiguration(...)` to read and merge configuration from YAML and/or JSON files.
+If you have multiple variants of configurations (such as `settings.default.yml`, `settings.staging.yml`, `settings.production.yml`), use `loadConfigurationWithVariant(...)` instead.
 
-If you have multiple variants of the configurations, such like `settings.default.yml`, `settings.staging.yml`, `settings.production.yml`,
-you can use `loadConfigurationWithVariant(...)` or `DevUtils.loadConfigurationWithVariant(...)` instead.
-
-`loadConfiguration(...)` / `DevUtils.loadConfiguration(...)` has these features:
-
-- Find and parse files in the same directory with different extensions. By default it picks up and parses `.yaml`, `.yml` and `.json` files,
-  but you can customise file extensions and the order they override each other. You can also customise it to pick up different versions of
-  configuration files, such like: `{'-v3.yml': 'yaml', '-v2.yml': 'yaml', '.json': 'json'}`
-- Find and parse files in ancestor (parent, grandparent, etc.) directories as well. This is not the default behaviour, but you can provide a predicate function
-  to `options.shouldCheckAncestorDir` for customising this behaviour. If configuration files exit in both parent and child directories, the configuration
-  in the child directory overrides that in the parent directory.
-- Although you may not need it, you can customise how configurations are merged by providing the merge function to `options.merge`. 
-- If the configuration file does not exist, it would just be silently ignored.
-- If the configuration file has a format/syntax error and can't be parsed, an Error would be thrown.
-- If there's no configuration file picked up, it would return `undefined`.
-
-`loadConfigurationWithVariant(...)` / `DevUtils.loadConfigurationWithVariant(...)` has these additional features:
-
-- Allows a base variant and an interested variant to be specified
-- Overrides the base variant configuration with the interested variant configuration
-
-Code examples:
+### Importing
 
 ```typescript
-// Pick up and merge (those to the left overrides those to the right) configurations from: ./my-config.yaml, ./my-config.yml, ./my-config.json
-const config = DevUtils.loadConfiguration('my-config');
+// Direct function import (recommended)
+import { loadConfiguration, loadConfigurationWithVariant } from '@handy-common-utils/dev-utils';
+
+// Class-based import
+import { DevUtils } from '@handy-common-utils/dev-utils';
+```
+
+### Features
+
+- **Format support**: By default, it parses `.yaml`, `.yml` and `.json` files. You can customize the extensions and their override order.
+- **Precedence**: Files specified earlier in the extensions list override subsequent ones (meaning they have higher precedence).
+- **Hierarchical Loading**: Supports searching in ancestor (parent, grandparent, etc.) directories by supplying a predicate function to `options.shouldCheckAncestorDir`. Configurations in child directories override configurations in parent directories.
+- **Custom Merging**: By default, configurations are merged using `lodash/merge` (where properties in the latter files override the former). You can supply a custom merge function.
+- **Robust Error Handling**: Non-existent configuration files are silently ignored, but syntax/format errors will throw an error to help with debugging.
+
+### Code Examples
+
+```typescript
+// Pick up and merge (default extensions: .yaml overrides .yml overrides .json)
+// Searches: ./my-config.yaml, ./my-config.yml, ./my-config.json
+const config = loadConfiguration('my-config');
 
 // Pick up and merge ./my-config.default.{yaml,yml,json} with ./my-config.prod.{yaml,yml,json}
-const config = DevUtils.loadConfigurationWithVariant('my-config', '.prod');
+// where prod overrides default.
+const config = loadConfigurationWithVariant('my-config', '.prod');
 
 // Pick up and merge ./my-config-production.{yaml,yml,json} with ./my-config.{yaml,yml,json}
-const config = DevUtils.loadConfigurationWithVariant('my-config', '-production', '');
+const config = loadConfigurationWithVariant('my-config', '-production', '');
 
-// Let .json override .yml and don't try to pick up .yaml
-const config = DevUtils.loadConfiguration('my-config', { extensions: {
-  '.json': 'json',
-  '.yml': 'yaml',
-} });
+// Customize parser order (let .json override .yml and ignore .yaml)
+const config = loadConfiguration('my-config', {
+  extensions: {
+    '.json': 'json',
+    '.yml': 'yaml',
+  }
+});
 
-// Pickup and merge (v3 overrides v2 overrides legacy) my-config-v3.yml, my-config-v2.yml, my-config.json
-const config = DevUtils.loadConfiguration('my-config', { extensions: {
-  '-v3.yml': 'yaml',
-  '-v2.yml': 'yaml',
-  '.json': 'json',
-} });
+// Advanced suffixes (v3 overrides v2 overrides base JSON)
+const config = loadConfiguration('my-config', {
+  extensions: {
+    '-v3.yml': 'yaml',
+    '-v2.yml': 'yaml',
+    '.json': 'json',
+  }
+});
 
-// Search in parent, grand parent, and great grand parent directories as well
-const config = DevUtils.loadConfiguration(
-  'my-config',
-  {
-    dir: 'test/fixtures/dir_L1/dir_L2/dir_L3/dir_L4',
-    shouldCheckAncestorDir: (level, _dirName, _dirAbsolutePath) => level <= 3,
-  },
-);
+// Search up to 3 levels of ancestor directories
+const config = loadConfiguration('my-config', {
+  dir: 'test/fixtures/dir_L1/dir_L2/dir_L3/dir_L4',
+  shouldCheckAncestorDir: (level, _dirName, _dirAbsolutePath) => level <= 3,
+});
 ```
+
+---
 
 # How to contribute
 
-Please note that for avoiding peer dependency `serverless` to be included,
-bundled dependency `serverless-plugin-git-variables` was installed with additional option:
+Please note that to avoid including `serverless` as a peer dependency, the bundled dependency `serverless-plugin-git-variables` was installed with the `--legacy-peer-deps` option:
 
 ```sh
 npm i serverless-plugin-git-variables --legacy-peer-deps
 ```
 
 # API
+
 
 <!-- API start -->
 <a name="readmemd"></a>
